@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 
 
-class BaseFormBlob(models.Model):
+class BaseFormativeBlob(models.Model):
+    formative_type = models.CharField(max_length=150)
     json_data = models.TextField()
 
     @property
@@ -19,5 +19,5 @@ class BaseFormBlob(models.Model):
         abstract = True
 
 
-class FormBlob(BaseFormBlob):
+class FormativeBlob(BaseFormativeBlob):
     unique_identifier = models.CharField(max_length=150, unique=True)
