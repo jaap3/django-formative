@@ -10,19 +10,16 @@ class TestSimpleForm(unittest.TestCase):
             'name': 'test-name'
         })
         f.full_clean()
-        self.object = f.save()
+        self.obj = f.save(commit=False)
 
     def test_unique_identifier(self):
-        self.assertEqual(self.object.unique_identifier, 'test-identifier')
+        self.assertEqual(self.obj.unique_identifier, 'test-identifier')
 
     def test_unique_identifier_not_in_data(self):
-        self.assertFalse('unique_identifier' in self.object.data)
+        self.assertFalse('unique_identifier' in self.obj.data)
 
     def test_data(self):
-        self.assertEqual(self.object.data['name'], 'test-name')
-
-    def tearDown(self):
-        self.object.delete()
+        self.assertEqual(self.obj.data['name'], 'test-name')
 
 
 class TestSimpleFormWithInstance(TestSimpleForm):
@@ -32,9 +29,9 @@ class TestSimpleFormWithInstance(TestSimpleForm):
         f = SimpleForm({
             'unique_identifier': 'test-identifier',
             'name': 'changed-name'
-        }, instance=self.object)
+        }, instance=self.obj)
         f.full_clean()
-        self.object = f.save()
+        self.obj = f.save(commit=False)
 
     def test_data(self):
-        self.assertEqual(self.object.data['name'], 'changed-name')
+        self.assertEqual(self.obj.data['name'], 'changed-name')
