@@ -1,10 +1,18 @@
 import json
+from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from formative.registry import FormativeTypeRegistry
+
+
+def formative_type_validator(value):
+    if value not in FormativeTypeRegistry():
+        raise ValidationError('Invalid formative type: %r' % value)
 
 
 class BaseFormativeBlob(models.Model):
-    formative_type = models.CharField(max_length=150)
+    formative_type = models.CharField(max_length=150,
+                                      validators=[formative_type_validator])
     json_data = models.TextField()
 
     @property
