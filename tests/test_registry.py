@@ -13,3 +13,6 @@ class TestRegistry(unittest.TestCase):
 
     def test_get_form(self):
         self.assertEqual(self.registry.get('simple').get_form(), SimpleForm)
+
+    def test_unicode(self):
+        self.assertEqual(unicode(self.registry.get('simple')), 'Simple')
