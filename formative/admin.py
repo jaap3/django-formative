@@ -19,6 +19,33 @@ class FormativeTypeForm(forms.Form):
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
+    def get_formative_type(self, request, obj=None):
+        """
+        Get the formative type definition for an object OR based on the request.
+        """
+        ft = None
+        if obj is None:
+            # No object, try to get the content type from the request params
+            form = FormativeTypeForm(request.GET)
+            if form.is_valid():
+                ft = form.cleaned_data['formative_type']
+        else:
+            ft = obj.formative_type
+        if ft:
+            return FormativeTypeRegistry()[ft]
+        return None
+
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Get a form for the add/change view.
+        """
+        formative_type = self.get_formative_type(request, obj)
+        if formative_type:
+            kwargs['form'] = formative_type.get_admin_form(request, obj,
+                                                           **kwargs)
+        return super(FormativeBlobAdmin,
+                     self).get_form(request, obj=obj, **kwargs)
+
     def add_view(self, request, form_url='', extra_context=None):
         """
         Checks if a content type is selected, if so delegates to super.

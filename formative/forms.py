@@ -5,6 +5,19 @@ from formative.models import FormativeBlob
 class FormativeForm(forms.ModelForm):
     formative_type = None
 
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.pop('instance', None)
+        initial = kwargs.pop('initial', None)
+        if instance:
+            data = instance.data.copy()
+            if initial is not None:
+                initial = data.update(initial)
+            else:
+                initial = data
+        super(FormativeForm, self).__init__(instance=instance,
+                                            initial=initial,
+                                            *args, **kwargs)
+
     def save(self, commit=True):
         data = {}
         for key in self.declared_fields.keys():

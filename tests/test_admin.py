@@ -3,6 +3,8 @@ from django.contrib.admin import AdminSite
 from django.test import RequestFactory
 from formative.admin import FormativeTypeForm, FormativeBlobAdmin
 from formative.models import FormativeBlob
+from formative.registry import FormativeTypeRegistry
+from tests.testproject.testapp.forms import SimpleForm
 
 
 class MockUser(object):
@@ -24,7 +26,7 @@ class TestFormativeTypeFormValidation(unittest.TestCase):
         self.assertTrue(f.is_valid())
 
 
-class TestFormativeBlobAdminSelectType(unittest.TestCase):
+class TestSelectType(unittest.TestCase):
     def setUp(self):
         self.admin = FormativeBlobAdmin(FormativeBlob, AdminSite())
         self.request = RequestFactory().get('/add/')
@@ -63,3 +65,30 @@ class TestFormativeBlobAdminSelectType(unittest.TestCase):
         request.user = MockUser()
         response = self.admin.add_view(request)
         self.assertIn('admin/change_form.html', response.template_name)
+
+
+class TestAddAndChange(unittest.TestCase):
+    def setUp(self):
+        self.admin = FormativeBlobAdmin(FormativeBlob, AdminSite())
+        self.request = RequestFactory().get('/add/', {
+            'formative_type': 'simple',
+        })
+        self.request.user = MockUser()
+        self.SimpleForm = FormativeTypeRegistry().get('simple').get_form()
+
+    def test_add_gets_correct_form(self):
+        response = self.admin.add_view(self.request)
+        self.assertIsInstance(response.context_data['adminform'].form,
+                              self.SimpleForm)
+
+    def test_change_gets_correct_form(self):
+        f = self.SimpleForm({
+            'unique_identifier': 'test-identifier',
+            'name': 'test-name'
+        })
+        f.full_clean()
+        obj = f.save()
+        response = self.admin.change_view(self.request, str(obj.pk))
+        self.assertIsInstance(response.context_data['adminform'].form,
+                              SimpleForm)
+        obj.delete()

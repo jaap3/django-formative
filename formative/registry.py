@@ -17,6 +17,12 @@ class FormativeType(object):
     def get_form(self):
         return self.set_formative_type(self.form)
 
+    def get_admin_form(self, request, obj=None, **kwargs):
+        """
+        Helper method for the admin, works like ModelAdmin.get_form
+        """
+        return self.get_form()
+
     def __unicode__(self):
         return self.verbose_name
 
