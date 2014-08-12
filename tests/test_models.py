@@ -19,3 +19,14 @@ class TestFormativeTypeValidation(unittest.TestCase):
             blob.full_clean()
         except ValidationError as e:
             self.fail('ValidationError raised: %s' % e)
+
+
+class TestFormativeBlob(unittest.TestCase):
+    def setUp(self):
+        self.blob = FormativeBlob(unique_identifier='identifier',
+                                  formative_type='simple',
+                                  json_data='{}')
+        self.blob.save()
+
+    def test_unicode(self):
+        self.assertEqual(unicode(self.blob), 'identifier (simple)')
