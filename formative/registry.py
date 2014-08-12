@@ -21,7 +21,7 @@ class FormativeType(object):
         return self.verbose_name
 
 
-class FormativeTypeChoices(UserDict):
+class FormativeTypeRegistry(UserDict):
     def __init__(self):
         self.data = {}
         for formative_type in _registry:

@@ -1,10 +1,10 @@
 import unittest
-
-from tests.testproject.testapp.forms import SimpleForm
+from formative.registry import FormativeTypeRegistry
 
 
 class TestSimpleForm(unittest.TestCase):
     def setUp(self):
+        SimpleForm = FormativeTypeRegistry().get('simple').get_form()
         f = SimpleForm({
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
@@ -28,6 +28,7 @@ class TestSimpleForm(unittest.TestCase):
 class TestSimpleFormWithInstance(TestSimpleForm):
     def setUp(self):
         super(TestSimpleFormWithInstance, self).setUp()
+        SimpleForm = FormativeTypeRegistry().get('simple').get_form()
         f = SimpleForm({
             'unique_identifier': 'test-identifier',
             'name': 'changed-name'

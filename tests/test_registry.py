@@ -1,15 +1,15 @@
 import unittest
 
-from formative.registry import FormativeTypeChoices
+from formative.registry import FormativeTypeRegistry
 from tests.testproject.testapp.forms import SimpleForm
 
 
 class TestRegistry(unittest.TestCase):
     def setUp(self):
-        self.choices = FormativeTypeChoices()
+        self.registry = FormativeTypeRegistry()
 
     def test_is_registered(self):
-        self.assertTrue('simple' in self.choices)
+        self.assertTrue('simple' in self.registry)
 
     def test_get_form(self):
-        self.assertEqual(self.choices['simple'].get_form(), SimpleForm)
+        self.assertEqual(self.registry.get('simple').get_form(), SimpleForm)
