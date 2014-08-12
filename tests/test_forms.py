@@ -1,6 +1,6 @@
 import unittest
 
-from tests.testproject.forms import SimpleForm
+from tests.testproject.testapp.forms import SimpleForm
 
 
 class TestSimpleForm(unittest.TestCase):

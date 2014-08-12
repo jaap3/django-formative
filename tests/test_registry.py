@@ -1,11 +1,11 @@
 import unittest
-from formative.registry import FormativeType, FormativeTypeChoices, register
-from tests.testproject.forms import SimpleForm
+
+from formative.registry import FormativeTypeChoices
+from tests.testproject.testapp.forms import SimpleForm
 
 
 class TestRegistry(unittest.TestCase):
     def setUp(self):
-        register(FormativeType('simple', SimpleForm))
         self.choices = FormativeTypeChoices()
 
     def test_is_registered(self):
