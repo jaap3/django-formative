@@ -21,7 +21,8 @@ class FormativeTypeForm(forms.Form):
 class FormativeBlobAdmin(admin.ModelAdmin):
     def get_formative_type(self, request, obj=None):
         """
-        Get the formative type definition for an object OR based on the request.
+        Get the formative type definition for an object OR based on
+        the request.
         """
         ft = None
         if obj is None:
