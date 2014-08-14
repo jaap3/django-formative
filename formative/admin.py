@@ -75,8 +75,8 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Checks if a content type is selected, if so delegates to super.
         If not, self.select_content_type_view is called.
         """
-        form = FormativeTypeForm(request.GET)
-        if form.is_valid():
+        formative_type = self.get_formative_type(request)
+        if formative_type:
             return super(FormativeBlobAdmin,
                          self).add_view(request, form_url=form_url,
                                         extra_context=extra_context)
