@@ -33,7 +33,7 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         else:
             ft = obj.formative_type
         if ft:
-            return FormativeTypeRegistry()[ft]
+            return FormativeTypeRegistry().get(ft)
         return None
 
     def get_form(self, request, obj=None, **kwargs):
