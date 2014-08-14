@@ -92,3 +92,36 @@ class TestAddAndChange(unittest.TestCase):
         self.assertIsInstance(response.context_data['adminform'].form,
                               SimpleForm)
         obj.delete()
+
+
+class TestGetFieldsets(unittest.TestCase):
+    def setUp(self):
+        self.admin = FormativeBlobAdmin(FormativeBlob, AdminSite())
+
+    def test_get_undefined_fieldsets(self):
+        request = RequestFactory().get('/add/', {
+            'formative_type': 'simple',
+        })
+        self.assertEqual(self.admin.get_fieldsets(request), [
+            (None, {'fields': ['unique_identifier', 'name']})
+        ])
+
+    def test_get_defined_fieldsets(self):
+        request = RequestFactory().get('/add/', {
+            'formative_type': 'fieldset-identifier',
+        })
+        self.assertEqual(self.admin.get_fieldsets(request),  [
+            (None, {'fields': ['unique_identifier']}),
+            ('Title', {'fields': ['title']}),
+            ('Body', {'fields': ['body']})
+        ])
+
+    def test_get_fieldsets_adds_unique_identifier(self):
+        request = RequestFactory().get('/add/', {
+            'formative_type': 'fieldset-no-identifier',
+        })
+        self.assertEqual(self.admin.get_fieldsets(request),  [
+            (None, {'fields': ['unique_identifier']}),
+            ('Title', {'fields': ['title']}),
+            ('Body', {'fields': ['body']})
+        ])

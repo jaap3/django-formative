@@ -45,6 +45,30 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         return super(FormativeBlobAdmin,
                      self).get_form(request, obj=obj, **kwargs)
 
+    def get_fieldsets(self, request, obj=None):
+        """
+        Get fieldset definition for the add/change view.
+        """
+        formative_type = self.get_formative_type(request, obj)
+        fieldsets = None
+        if formative_type:
+            fieldsets = formative_type.get_fieldsets(request, obj)
+            if fieldsets:
+                # user defined fieldsets, make sure unique_identifier
+                # is in there!
+                found = False
+                for fieldset in fieldsets:
+                    if 'unique_identifier' in fieldset[1].get('fields', []):
+                        found = True
+                        break
+                if not found:
+                    fieldsets = ([(None, {'fields': ['unique_identifier']})]
+                                 + list(fieldsets))
+        if fieldsets is None:
+            fieldsets = super(FormativeBlobAdmin,
+                              self).get_fieldsets(request, obj)
+        return fieldsets
+
     def add_view(self, request, form_url='', extra_context=None):
         """
         Checks if a content type is selected, if so delegates to super.
