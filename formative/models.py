@@ -19,7 +19,17 @@ class BaseFormativeBlob(models.Model):
 
     @property
     def data(self):
-        return json.loads(self.json_data)
+        """
+        Restores the stored json data to the correct python objects.
+        """
+        data = {}
+        json_data = json.loads(self.json_data)
+        # XXX: This makes me scared... not sure why
+        form = (FormativeTypeRegistry().get(self.formative_type)
+                .form(initial=json_data))
+        for key, value in json_data.items():
+            data[key] = form.fields[key].to_python(value)
+        return data
 
     @data.setter
     def data(self, value):
