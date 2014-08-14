@@ -4,11 +4,19 @@ _registry = set()
 
 
 class FormativeType(object):
-    def __init__(self, name, form=None, fieldsets=None, verbose_name=None):
+    def __init__(self, name, form, fieldsets=None, verbose_name=None):
         self.name = name
-        self.form = self._set_formative_type(form)
+        self.form = form
         self.fieldsets = fieldsets
         self.verbose_name = verbose_name or name.title()
+
+    @property
+    def form(self):
+        return self._set_formative_type(self._form)
+
+    @form.setter
+    def form(self, form):
+        self._form = form
 
     def _set_formative_type(self, form):
         form.formative_type = self.name
