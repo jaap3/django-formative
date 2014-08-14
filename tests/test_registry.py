@@ -12,7 +12,11 @@ class TestRegistry(unittest.TestCase):
         self.assertTrue('simple' in self.registry)
 
     def test_get_form(self):
-        self.assertEqual(self.registry.get('simple').get_form(), SimpleForm)
+        self.assertEqual(self.registry.get('simple').form, SimpleForm)
+
+    def test_form_has_formative_type_set(self):
+        self.assertEqual(self.registry.get('simple').form.formative_type,
+                         'simple')
 
     def test_unicode(self):
         self.assertEqual(unicode(self.registry.get('simple')), 'Simple')

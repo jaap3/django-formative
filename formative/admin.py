@@ -41,8 +41,7 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         """
         formative_type = self.get_formative_type(request, obj)
         if formative_type:
-            kwargs['form'] = formative_type.get_admin_form(request, obj,
-                                                           **kwargs)
+            kwargs['form'] = formative_type.get_form(request, obj, **kwargs)
         return super(FormativeBlobAdmin,
                      self).get_form(request, obj=obj, **kwargs)
 

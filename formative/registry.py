@@ -6,22 +6,18 @@ _registry = set()
 class FormativeType(object):
     def __init__(self, name, form=None, verbose_name=None):
         self.name = name
+        self.form = self._set_formative_type(form)
         self.verbose_name = verbose_name or name.title()
-        self.form = form
 
-    def set_formative_type(self, form):
-        if form.formative_type != self.name:
-            form.formative_type = self.name
+    def _set_formative_type(self, form):
+        form.formative_type = self.name
         return form
 
-    def get_form(self):
-        return self.set_formative_type(self.form)
-
-    def get_admin_form(self, request, obj=None, **kwargs):
+    def get_form(self, request, obj=None, **kwargs):
         """
         Helper method for the admin, works like ModelAdmin.get_form
         """
-        return self.get_form()
+        return self.form
 
     def __unicode__(self):
         return self.verbose_name

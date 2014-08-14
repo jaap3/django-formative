@@ -74,7 +74,7 @@ class TestAddAndChange(unittest.TestCase):
             'formative_type': 'simple',
         })
         self.request.user = MockUser()
-        self.SimpleForm = FormativeTypeRegistry().get('simple').get_form()
+        self.SimpleForm = FormativeTypeRegistry().get('simple').form
 
     def test_add_gets_correct_form(self):
         response = self.admin.add_view(self.request)
