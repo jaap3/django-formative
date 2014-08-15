@@ -1,6 +1,9 @@
 from django.test import TestCase
-from formative.registry import FormativeType, FormativeTypeRegistry, register
+from formative.registry import FormativeType, FormativeTypeRegistry, register, autodiscover
 from tests.testproject.testapp.forms import SimpleForm
+
+
+autodiscover()
 
 
 class TestRegistry(TestCase):
@@ -23,23 +26,27 @@ class TestRegistry(TestCase):
 
 class TestRegister(TestCase):
     def test_register(self):
-        register(FormativeType('simple-2', SimpleForm))
+        register('simple-2', SimpleForm)
         self.assertTrue('simple-2' in FormativeTypeRegistry())
 
 
 class CustomFormativeType(FormativeType):
-    def __init__(self):
-        super(CustomFormativeType, self).__init__('simple-custom', SimpleForm)
+    def __init__(self, name, form, fieldsets=None, verbose_name=None):
+        super(CustomFormativeType, self).__init__(name, form)
         self.verbose_name = 'Custom'
 
 
 class TestCustomClassRegistry(TestCase):
     def setUp(self):
-        register(CustomFormativeType())
+        register('simple-custom', SimpleForm, cls=CustomFormativeType)
         self.registry = FormativeTypeRegistry()
 
     def test_is_registered(self):
         self.assertTrue('simple-custom' in FormativeTypeRegistry())
+
+    def test_is_correct_instance(self):
+        self.assertIsInstance(self.registry.get('simple-custom'),
+                              CustomFormativeType)
 
     def test_get_form(self):
         self.assertEqual(self.registry.get('simple-custom').form, SimpleForm)

@@ -45,5 +45,28 @@ class FormativeTypeRegistry(UserDict):
             self.data[formative_type.name] = formative_type
 
 
-def register(definition):
-    _registry.add(definition)
+def register(name, form, fieldsets=None, verbose_name=None, cls=FormativeType):
+    _registry.add(cls(name, form, fieldsets=fieldsets,
+                      verbose_name=verbose_name))
+
+
+def autodiscover():
+    """
+    Auto-discover INSTALLED_APPS formative_forms.py modules and fail silently
+    if not present.
+    """
+    from django.conf import settings
+    from django.utils.importlib import import_module
+    from django.utils.module_loading import module_has_submodule
+
+    for app in settings.INSTALLED_APPS:
+        mod = import_module(app)
+        # Attempt to import the app's formative module.
+        try:
+            import_module('%s.formative_forms' % app)
+        except:
+            # Decide whether to bubble up this error. If the app just
+            # doesn't have an formative module, we can ignore the error
+            # attempting to import it, otherwise we want it to bubble up.
+            if module_has_submodule(mod, 'formative_forms'):
+                raise
