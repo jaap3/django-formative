@@ -1,9 +1,9 @@
-import unittest
+from django.test import TestCase
 from django.core.exceptions import ValidationError
 from formative.models import FormativeBlob
 
 
-class TestFormativeTypeValidation(unittest.TestCase):
+class TestFormativeTypeValidation(TestCase):
     def test_invalid_type(self):
         blob = FormativeBlob(unique_identifier='invalid',
                              formative_type='invalid',
@@ -21,7 +21,7 @@ class TestFormativeTypeValidation(unittest.TestCase):
             self.fail('ValidationError raised: %s' % e)
 
 
-class TestFormativeBlob(unittest.TestCase):
+class TestFormativeBlob(TestCase):
     def setUp(self):
         self.blob = FormativeBlob(unique_identifier='identifier',
                                   formative_type='simple',

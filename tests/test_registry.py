@@ -1,10 +1,9 @@
-import unittest
-
+from django.test import TestCase
 from formative.registry import FormativeType, FormativeTypeRegistry, register
 from tests.testproject.testapp.forms import SimpleForm
 
 
-class TestRegistry(unittest.TestCase):
+class TestRegistry(TestCase):
     def setUp(self):
         self.registry = FormativeTypeRegistry()
 
@@ -22,7 +21,7 @@ class TestRegistry(unittest.TestCase):
         self.assertEqual(unicode(self.registry.get('simple')), 'Simple')
 
 
-class TestRegister(unittest.TestCase):
+class TestRegister(TestCase):
     def test_register(self):
         register(FormativeType('simple-2', SimpleForm))
         self.assertTrue('simple-2' in FormativeTypeRegistry())
@@ -34,7 +33,7 @@ class CustomFormativeType(FormativeType):
         self.verbose_name = 'Custom'
 
 
-class TestCustomClassRegistry(unittest.TestCase):
+class TestCustomClassRegistry(TestCase):
     def setUp(self):
         register(CustomFormativeType())
         self.registry = FormativeTypeRegistry()

@@ -1,6 +1,5 @@
-import unittest
 from django.contrib.admin import AdminSite
-from django.test import RequestFactory
+from django.test import RequestFactory, TestCase
 from formative.admin import FormativeTypeForm, FormativeBlobAdmin
 from formative.models import FormativeBlob
 from formative.registry import FormativeTypeRegistry
@@ -12,7 +11,7 @@ class MockUser(object):
         return True
 
 
-class TestFormativeTypeFormValidation(unittest.TestCase):
+class TestFormativeTypeFormValidation(TestCase):
     def test_invalid_type(self):
         f = FormativeTypeForm({'formative_type': 'invalid'})
         self.assertFalse(f.is_valid())
@@ -26,7 +25,7 @@ class TestFormativeTypeFormValidation(unittest.TestCase):
         self.assertTrue(f.is_valid())
 
 
-class TestSelectType(unittest.TestCase):
+class TestSelectType(TestCase):
     def setUp(self):
         self.admin = FormativeBlobAdmin(FormativeBlob, AdminSite())
         self.request = RequestFactory().get('/add/')
@@ -67,7 +66,7 @@ class TestSelectType(unittest.TestCase):
         self.assertIn('admin/change_form.html', response.template_name)
 
 
-class TestAddAndChange(unittest.TestCase):
+class TestAddAndChange(TestCase):
     def setUp(self):
         self.admin = FormativeBlobAdmin(FormativeBlob, AdminSite())
         self.request = RequestFactory().get('/add/', {
@@ -94,7 +93,7 @@ class TestAddAndChange(unittest.TestCase):
         obj.delete()
 
 
-class TestGetFieldsets(unittest.TestCase):
+class TestGetFieldsets(TestCase):
     def setUp(self):
         self.admin = FormativeBlobAdmin(FormativeBlob, AdminSite())
 

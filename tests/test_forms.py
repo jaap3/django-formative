@@ -1,10 +1,10 @@
 import datetime
-import unittest
 from decimal import Decimal
+from django.test import TestCase
 from formative.registry import FormativeTypeRegistry
 
 
-class TestSimpleForm(unittest.TestCase):
+class TestSimpleForm(TestCase):
     def setUp(self):
         SimpleForm = FormativeTypeRegistry().get('simple').form
         f = SimpleForm({
@@ -39,7 +39,7 @@ class TestSimpleFormWithInstance(TestSimpleForm):
         self.assertEqual(self.obj.data['name'], 'changed-name')
 
 
-class TestFancyForm(unittest.TestCase):
+class TestFancyForm(TestCase):
     def setUp(self):
         self.FancyForm = FormativeTypeRegistry().get('fancy').form
 
