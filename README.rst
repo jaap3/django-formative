@@ -55,3 +55,22 @@ the call to `admin.autodiscover()`::
 
 That's it. Now you can create formative objects in the admin using your
 simple form.
+
+You probably want to use the data in some way. Simply get an instance of
+a FormativeBlob by its unique_identifier and access the data property as
+a dictionary::
+
+    from formative.models import FormativeBlob
+    >>> f = FormativeBlob.objects.get(unique_identifier='simple')
+    >>> f.unique_identifier
+    'simple'
+    >>> f.data['name']
+    'test'
+
+Django-formative also provides a templatetag to use the data in your templates::
+
+    {% load formative_tags %}
+    {% get_formative_blob 'simple' as simple %}
+    {{ simple.unique_identifier }}
+    {{ simple.data.name }}
+    {{ simple.data.body }}
