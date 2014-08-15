@@ -15,14 +15,14 @@ class FieldsetForm(FormativeBlobForm):
 
 class FancyForm(FormativeBlobForm):
     is_fancy = forms.BooleanField(initial=True, required=False)
-    favorite_color = forms.ChoiceField(choices=
-        [('red', 'Red'), ('geen', 'Green'), ('blue', 'Blue')])
+    favorite_color = forms.ChoiceField(choices=[
+        ('red', 'Red'), ('geen', 'Green'), ('blue', 'Blue')])
     date_of_birth = forms.DateField(widget=SelectDateWidget)
     income = forms.DecimalField()
     number_of_fingers = forms.IntegerField(initial=10)
-    family_members = forms.MultipleChoiceField(choices=
-        [('mom', 'Mom'), ('dad', 'Dad'),
-         ('brothers', 'Brother(s)'), ('sisters', 'Sister(s)')])
+    family_members = forms.MultipleChoiceField(choices=[
+        ('mom', 'Mom'), ('dad', 'Dad'),
+        ('brothers', 'Brother(s)'), ('sisters', 'Sister(s)')])
     time_of_day = forms.TimeField()
 
 

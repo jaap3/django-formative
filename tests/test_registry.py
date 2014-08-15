@@ -1,7 +1,7 @@
 from django.test import TestCase
-from formative.registry import FormativeType, FormativeTypeRegistry, register, autodiscover
+from formative.registry import (FormativeType, FormativeTypeRegistry,
+                                register, autodiscover)
 from tests.testproject.testapp.forms import SimpleForm
-
 
 autodiscover()
 
