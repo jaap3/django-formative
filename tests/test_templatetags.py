@@ -5,8 +5,7 @@ from formative import registry
 
 class TestFormativeTags(TestCase):
     def setUp(self):
-        SimpleForm = registry.get('simple').form
-        f = SimpleForm({
+        f = registry.get('simple').form({
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
         })

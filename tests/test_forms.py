@@ -13,7 +13,7 @@ class TestSimpleForm(TestCase):
             'name': 'test-name'
         })
         f.full_clean()
-        self.obj = f.save(commit=False)
+        self.obj = f.save()
 
     def test_unique_identifier(self):
         self.assertEqual(self.obj.unique_identifier, 'test-identifier')
@@ -34,7 +34,7 @@ class TestSimpleFormWithInstance(TestSimpleForm):
             'name': 'changed-name'
         }, instance=self.obj)
         f.full_clean()
-        self.obj = f.save(commit=False)
+        self.obj = f.save()
 
     def test_data(self):
         self.assertEqual(self.obj.data['name'], 'changed-name')
@@ -53,7 +53,7 @@ class TestFancyForm(TestCase):
             'time_of_day': '16:20'
         })
         f.full_clean()
-        obj = f.save(commit=False)
+        obj = f.save()
         self.assertEqual(obj.data, {
             'is_fancy': True,
             'favorite_color': 'blue',
@@ -77,7 +77,7 @@ class TestRelatedForm(TestCase):
             'book': self.book.pk
         })
         f.full_clean()
-        obj = f.save(commit=False)
+        obj = f.save()
         self.assertEqual(obj.data, {
             'book': self.book
         })
@@ -88,7 +88,7 @@ class TestRelatedForm(TestCase):
             'book': self.book.pk
         })
         f.full_clean()
-        obj = f.save(commit=False)
+        obj = f.save()
         self.book.delete()
         self.assertEqual(obj.data, {
             'book': None
