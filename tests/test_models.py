@@ -28,5 +28,5 @@ class TestFormativeBlob(TestCase):
                                   json_data='{}')
         self.blob.save()
 
-    def test_unicode(self):
-        self.assertEqual(unicode(self.blob), 'identifier (simple)')
+    def test_str(self):
+        self.assertEqual(str(self.blob), 'identifier (simple)')

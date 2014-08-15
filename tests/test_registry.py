@@ -20,8 +20,8 @@ class TestRegistry(TestCase):
         self.assertEqual(self.registry.get('simple').form.formative_type,
                          'simple')
 
-    def test_unicode(self):
-        self.assertEqual(unicode(self.registry.get('simple')), 'Simple')
+    def test_str(self):
+        self.assertEqual(str(self.registry.get('simple')), 'Simple')
 
 
 class TestRegister(TestCase):
@@ -56,6 +56,6 @@ class TestCustomClassRegistry(TestCase):
             self.registry.get('simple-custom').form.formative_type,
             'simple-custom')
 
-    def test_unicode(self):
-        self.assertEqual(unicode(self.registry.get('simple-custom')),
+    def test_str(self):
+        self.assertEqual(str(self.registry.get('simple-custom')),
                          'Custom')

@@ -1,4 +1,4 @@
-from UserDict import UserDict
+from collections import Mapping
 
 _registry = set()
 
@@ -34,15 +34,23 @@ class FormativeType(object):
         """
         return self.fieldsets
 
-    def __unicode__(self):
+    def __str__(self):
         return self.verbose_name
 
 
-class FormativeTypeRegistry(UserDict):
-    def __init__(self):
-        self.data = {}
+class FormativeTypeRegistry(Mapping):
+    def __iter__(self):
         for formative_type in _registry:
-            self.data[formative_type.name] = formative_type
+            yield formative_type.name
+
+    def __getitem__(self, item):
+        for formative_type in _registry:
+            if formative_type.name == item:
+                return formative_type
+        raise KeyError
+
+    def __len__(self):
+        return len(_registry)
 
 
 def register(name, form, fieldsets=None, verbose_name=None, cls=FormativeType):

@@ -48,5 +48,5 @@ class FormativeBlob(BaseFormativeBlob):
         verbose_name = _('formative blob')
         verbose_name_plural = _('formative blobs')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.unique_identifier, self.formative_type)
