@@ -11,9 +11,8 @@ class FormativeForm(forms.ModelForm):
         if instance:
             data = instance.data.copy()
             if initial is not None:
-                initial = data.update(initial)
-            else:
-                initial = data
+                data.update(initial)
+            initial = data
         super(FormativeForm, self).__init__(instance=instance,
                                             initial=initial,
                                             *args, **kwargs)

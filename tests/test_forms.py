@@ -29,15 +29,36 @@ class TestSimpleFormWithInstance(TestSimpleForm):
     def setUp(self):
         super(TestSimpleFormWithInstance, self).setUp()
         SimpleForm = registry.get('simple').form
-        f = SimpleForm({
+        self.f = SimpleForm({
             'unique_identifier': 'test-identifier',
             'name': 'changed-name'
         }, instance=self.obj)
-        f.full_clean()
-        self.obj = f.save()
+        self.f.full_clean()
+        self.obj = self.f.save()
+
+    def test_field_value(self):
+        self.assertEqual(self.f['name'].value(), 'changed-name')
 
     def test_data(self):
         self.assertEqual(self.obj.data['name'], 'changed-name')
+
+
+class TestSimpleFormWithInstanceAndInitial(TestCase):
+    def setUp(self):
+        SimpleForm = registry.get('simple').form
+        f = SimpleForm({
+            'unique_identifier': 'test-identifier',
+            'name': 'test-name'
+        })
+        f.full_clean()
+        obj = f.save()
+        self.f = SimpleForm(initial={
+            'unique_identifier': 'test-identifier',
+            'name': 'changed-name'
+        }, instance=obj)
+
+    def test_field_value(self):
+        self.assertEqual(self.f['name'].value(), 'changed-name')
 
 
 class TestFancyForm(TestCase):
