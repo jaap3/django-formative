@@ -24,7 +24,6 @@ class BaseFormativeBlob(models.Model):
         """
         data = {}
         json_data = json.loads(self.json_data)
-        # XXX: This makes me scared... not sure why
         form = (FormativeTypeRegistry().get(self.formative_type)
                 .form(initial=json_data))
         for key, value in json_data.items():
