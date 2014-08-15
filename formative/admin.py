@@ -20,18 +20,29 @@ class FormativeTypeForm(forms.Form):
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
-    def get_formative_type(self, request, obj=None):
+    search_fields = ('unique_identifier',)
+    list_filter = ('formative_type',)
+    list_display = ('unique_identifier', 'get_formative_type_display')
+    ordering = ('unique_identifier', 'formative_type')
+
+    def get_formative_type_display(self, obj):
+        ft = self.get_formative_type(obj=obj)
+        if ft:
+            return ft.verbose_name
+    get_formative_type_display.short_description = _('type')
+
+    def get_formative_type(self, request=None, obj=None):
         """
         Get the formative type definition for an object OR based on
         the request.
         """
         ft = None
-        if obj is None:
+        if request and obj is None:
             # No object, try to get the content type from the request params
             form = FormativeTypeForm(request.GET)
             if form.is_valid():
                 ft = form.cleaned_data['formative_type']
-        else:
+        elif obj:
             ft = obj.formative_type
         if ft:
             return registry.get(ft)
