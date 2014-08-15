@@ -77,4 +77,4 @@ def autodiscover():
             # doesn't have an formative module, we can ignore the error
             # attempting to import it, otherwise we want it to bubble up.
             if module_has_submodule(mod, 'formative_forms'):
-                raise
+                raise  # pragma: nocover
