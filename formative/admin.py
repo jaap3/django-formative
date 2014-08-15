@@ -15,7 +15,8 @@ class FormativeTypeForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(FormativeTypeForm, self).__init__(*args, **kwargs)
         # Set the choices here so they have had time to register.
-        self.fields['formative_type'].choices = FormativeTypeRegistry().items()
+        self.fields['formative_type'].choices = sorted(
+            FormativeTypeRegistry().items())
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
