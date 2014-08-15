@@ -1,6 +1,6 @@
 from formative import registry
 from tests.testproject.testapp.forms import (SimpleForm, FieldsetForm,
-                                             FancyForm)
+                                             FancyForm, BookRelatedForm)
 
 
 registry.register('simple', SimpleForm)
@@ -14,3 +14,4 @@ registry.register('fieldset-no-identifier', FieldsetForm, [
     ('Body', {'fields': ['body']})
 ])
 registry.register('fancy', FancyForm)
+registry.register('related', BookRelatedForm)

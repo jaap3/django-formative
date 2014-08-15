@@ -1,6 +1,7 @@
 from django import forms
 from formative.forms import FormativeBlobForm
 from django.forms.extras import SelectDateWidget
+from tests.testproject.testapp.models import Book
 
 
 class SimpleForm(FormativeBlobForm):
@@ -23,3 +24,7 @@ class FancyForm(FormativeBlobForm):
         [('mom', 'Mom'), ('dad', 'Dad'),
          ('brothers', 'Brother(s)'), ('sisters', 'Sister(s)')])
     time_of_day = forms.TimeField()
+
+
+class BookRelatedForm(FormativeBlobForm):
+    book = forms.ModelChoiceField(queryset=Book.objects.all())

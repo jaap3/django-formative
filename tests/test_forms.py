@@ -2,6 +2,7 @@ import datetime
 from decimal import Decimal
 from django.test import TestCase
 from formative.registry import FormativeTypeRegistry
+from tests.testproject.testapp.models import Book
 
 
 class TestSimpleForm(TestCase):
@@ -61,4 +62,34 @@ class TestFancyForm(TestCase):
             'number_of_fingers': 10,
             'family_members': ['mom', 'dad'],
             'time_of_day': datetime.time(16, 20)
+        })
+
+
+class TestRelatedForm(TestCase):
+    def setUp(self):
+        self.RelatedForm = FormativeTypeRegistry().get('related').form
+        self.book = Book(title='Gunmachine')
+        self.book.save()
+
+    def test_serializes_relation(self):
+        f = self.RelatedForm({
+            'unique_identifier': 'related',
+            'book': self.book.pk
+        })
+        f.full_clean()
+        obj = f.save(commit=False)
+        self.assertEqual(obj.data, {
+            'book': self.book
+        })
+
+    def test_data_does_not_break_on_deletion(self):
+        f = self.RelatedForm({
+            'unique_identifier': 'related',
+            'book': self.book.pk
+        })
+        f.full_clean()
+        obj = f.save(commit=False)
+        self.book.delete()
+        self.assertEqual(obj.data, {
+            'book': None
         })

@@ -28,7 +28,10 @@ class BaseFormativeBlob(models.Model):
         form = (FormativeTypeRegistry().get(self.formative_type)
                 .form(initial=json_data))
         for key, value in json_data.items():
-            data[key] = form.fields[key].to_python(value)
+            try:
+                data[key] = form.fields[key].to_python(value)
+            except ValidationError:
+                data[key] = None
         return data
 
     @data.setter
