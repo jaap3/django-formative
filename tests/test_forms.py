@@ -1,13 +1,13 @@
 import datetime
 from decimal import Decimal
 from django.test import TestCase
-from formative.registry import FormativeTypeRegistry
+from formative import registry
 from tests.testproject.testapp.models import Book
 
 
 class TestSimpleForm(TestCase):
     def setUp(self):
-        SimpleForm = FormativeTypeRegistry().get('simple').form
+        SimpleForm = registry.get('simple').form
         f = SimpleForm({
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
@@ -28,7 +28,7 @@ class TestSimpleForm(TestCase):
 class TestSimpleFormWithInstance(TestSimpleForm):
     def setUp(self):
         super(TestSimpleFormWithInstance, self).setUp()
-        SimpleForm = FormativeTypeRegistry().get('simple').form
+        SimpleForm = registry.get('simple').form
         f = SimpleForm({
             'unique_identifier': 'test-identifier',
             'name': 'changed-name'
@@ -42,7 +42,7 @@ class TestSimpleFormWithInstance(TestSimpleForm):
 
 class TestFancyForm(TestCase):
     def setUp(self):
-        self.FancyForm = FormativeTypeRegistry().get('fancy').form
+        self.FancyForm = registry.get('fancy').form
 
     def test_serializes_fancy_form(self):
         f = self.FancyForm({
@@ -67,7 +67,7 @@ class TestFancyForm(TestCase):
 
 class TestRelatedForm(TestCase):
     def setUp(self):
-        self.RelatedForm = FormativeTypeRegistry().get('related').form
+        self.RelatedForm = registry.get('related').form
         self.book = Book(title='Gunmachine')
         self.book.save()
 

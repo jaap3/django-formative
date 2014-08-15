@@ -3,11 +3,11 @@ from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from formative.registry import FormativeTypeRegistry
+from formative import registry
 
 
 def formative_type_validator(value):
-    if value not in FormativeTypeRegistry():
+    if value not in registry:
         raise ValidationError(_('Invalid formative type %r '
                                 'is not one of the available types.') % value)
 
@@ -24,8 +24,7 @@ class BaseFormativeBlob(models.Model):
         """
         data = {}
         json_data = json.loads(self.json_data)
-        form = (FormativeTypeRegistry().get(self.formative_type)
-                .form(initial=json_data))
+        form = (registry.get(self.formative_type).form(initial=json_data))
         for key, value in json_data.items():
             try:
                 data[key] = form.fields[key].to_python(value)

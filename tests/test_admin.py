@@ -1,8 +1,8 @@
 from django.contrib.admin import AdminSite
 from django.test import RequestFactory, TestCase
+from formative import registry
 from formative.admin import FormativeTypeForm, FormativeBlobAdmin
 from formative.models import FormativeBlob
-from formative.registry import FormativeTypeRegistry
 from tests.testproject.testapp.forms import SimpleForm
 
 
@@ -73,7 +73,7 @@ class TestAddAndChange(TestCase):
             'formative_type': 'simple',
         })
         self.request.user = MockUser()
-        self.SimpleForm = FormativeTypeRegistry().get('simple').form
+        self.SimpleForm = registry.get('simple').form
 
     def test_add_gets_correct_form(self):
         response = self.admin.add_view(self.request)

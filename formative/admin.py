@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from formative.models import FormativeBlob
-from formative.registry import FormativeTypeRegistry
+from formative import registry
 
 
 class FormativeTypeForm(forms.Form):
@@ -16,7 +16,7 @@ class FormativeTypeForm(forms.Form):
         super(FormativeTypeForm, self).__init__(*args, **kwargs)
         # Set the choices here so they have had time to register.
         self.fields['formative_type'].choices = sorted(
-            FormativeTypeRegistry().items())
+            registry.items())
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
@@ -34,7 +34,7 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         else:
             ft = obj.formative_type
         if ft:
-            return FormativeTypeRegistry().get(ft)
+            return registry.get(ft)
         return None
 
     def get_form(self, request, obj=None, **kwargs):

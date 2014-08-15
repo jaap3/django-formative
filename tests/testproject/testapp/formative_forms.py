@@ -1,17 +1,17 @@
-from formative import registry
+import formative
 from tests.testproject.testapp.forms import (SimpleForm, FieldsetForm,
                                              FancyForm, BookRelatedForm)
 
 
-registry.register('simple', SimpleForm)
-registry.register('fieldset-identifier', FieldsetForm, [
+formative.register('simple', SimpleForm)
+formative.register('fieldset-identifier', FieldsetForm, [
     (None, {'fields': ['unique_identifier']}),
     ('Title', {'fields': ['title']}),
     ('Body', {'fields': ['body']})
 ])
-registry.register('fieldset-no-identifier', FieldsetForm, [
+formative.register('fieldset-no-identifier', FieldsetForm, [
     ('Title', {'fields': ['title']}),
     ('Body', {'fields': ['body']})
 ])
-registry.register('fancy', FancyForm)
-registry.register('related', BookRelatedForm)
+formative.register('fancy', FancyForm)
+formative.register('related', BookRelatedForm)
