@@ -26,7 +26,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 setup(
     name='django-formative',
     version=version,
-    description="""Flexible content objects using Django forms""",
+    description="""Flexible non-model data objects using Django forms""",
     long_description=readme + '\n\n' + history,
     author='Jaap Roes',
     author_email='jaap.roes@gmail.com',
