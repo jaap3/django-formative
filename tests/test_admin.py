@@ -32,8 +32,8 @@ class TestSelectType(TestCase):
 
     def test_add_view_delegates_to_select_formative_type_view(self):
         response = self.admin.add_view(self.request)
-        self.assertEqual(response.template_name,
-                         'formative/admin/formative_type_form.html')
+        self.assertEqual(
+            response.template_name, 'formative/admin/formative_type_form.html')
 
     def test_add_returns_formative_type_form(self):
         response = self.admin.add_view(self.request)
@@ -45,16 +45,17 @@ class TestSelectType(TestCase):
             'formative_type': 'invalid', '_next': None
         }))
         self.assertEqual(response.context_data['adminform'].form.errors, {
-            'formative_type': [u'Select a valid choice. '
-                               u'invalid is not one of the available choices.']
+            'formative_type': [
+                'Select a valid choice.'
+                ' invalid is not one of the available choices.']
         })
 
     def test_add_without_next_param_and_invalid_type(self):
         response = self.admin.add_view(RequestFactory().get('/add/', {
             'formative_type': 'invalid',
         }))
-        self.assertEqual(response.template_name,
-                         'formative/admin/formative_type_form.html')
+        self.assertEqual(
+            response.template_name, 'formative/admin/formative_type_form.html')
         self.assertEqual(response.context_data['adminform'].form.errors, {})
 
     def test_add_with_valid_type_renders_add(self):
@@ -77,8 +78,8 @@ class TestAddAndChange(TestCase):
 
     def test_add_gets_correct_form(self):
         response = self.admin.add_view(self.request)
-        self.assertIsInstance(response.context_data['adminform'].form,
-                              self.SimpleForm)
+        self.assertIsInstance(
+            response.context_data['adminform'].form, self.SimpleForm)
 
     def test_change_gets_correct_form(self):
         f = self.SimpleForm({
@@ -137,5 +138,5 @@ class TestGetFormativeTypeDisplay(TestCase):
         })
         f.full_clean()
         obj = f.save()
-        self.assertEqual(self.admin.get_formative_type_display(obj),
+        self.assertEqual(self.admin.get_type_display(obj),
                          registry.get('simple').verbose_name)
