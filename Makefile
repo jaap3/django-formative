@@ -27,13 +27,13 @@ lint:
 	flake8 formative tests
 
 test:
-	python runtests.py tests
+	python manage.py test
 
 test-all:
 	tox
 
 coverage:
-	coverage run --source formative runtests.py tests
+	coverage run --source formative manage.py test
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
