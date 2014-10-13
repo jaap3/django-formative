@@ -1,4 +1,6 @@
 import json
+from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -8,8 +10,9 @@ from formative import registry
 
 def formative_type_validator(value):
     if value not in registry:
-        raise ValidationError(_('Invalid formative type %r '
-                                'is not one of the available types.') % value)
+        raise ValidationError(_(
+            'Invalid formative type \'%(type)s\' is not one of the'
+            ' available types.') % {'type': value})
 
 
 class BaseFormativeBlob(models.Model):
@@ -49,3 +52,15 @@ class FormativeBlob(BaseFormativeBlob):
 
     def __str__(self):
         return '%s (%s)' % (self.unique_identifier, self.formative_type)
+
+
+class InlineFormativeBlob(BaseFormativeBlob):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    sortorder = models.PositiveIntegerField(editable=False, default=0)
+
+    class Meta:
+        verbose_name = _('inline formative blob')
+        verbose_name_plural = _('inline formative blobs')
+        ordering = ('sortorder',)
