@@ -1,8 +1,10 @@
 from collections import Mapping
+from django.utils.encoding import python_2_unicode_compatible
 
 _registry = set()
 
 
+@python_2_unicode_compatible
 class FormativeType(object):
     def __init__(self, name, form, fieldsets=None, verbose_name=None):
         self.name = name
