@@ -2,8 +2,9 @@
 django-formative
 =============================
 
-.. image:: https://badge.fury.io/py/django-formative.png
-    :target: https://badge.fury.io/py/django-formative
+.. image:: https://pypip.in/version/django-formative/badge.svg
+    :target: https://pypi.python.org/pypi/django-formative/
+    :alt: Latest Version
 
 .. image:: https://travis-ci.org/jaap3/django-formative.png?branch=master
     :target: https://travis-ci.org/jaap3/django-formative

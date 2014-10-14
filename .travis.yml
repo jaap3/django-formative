@@ -2,16 +2,17 @@
 
 language: python
 
-python:
-  - "3.3"
-  - "2.7"
-  - "2.6"
+install: pip install tox
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -r requirements-test.txt
+script:
+  - tox
 
-# command to run tests using coverage, e.g. python setup.py test
-script: coverage run --source formative runtests.py
-
-# report coverage to coveralls.io
-after_success: coveralls
+env:
+  - TOXENV=py26-dj14
+  - TOXENV=py26-dj15
+  - TOXENV=py27-dj16
+  - TOXENV=py33-dj16
+  - TOXENV=py27-dj17
+  - TOXENV=py34-dj17
+  - TOXENV=flake8
+  - TOXENV=coverage

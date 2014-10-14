@@ -1,6 +1,8 @@
-include AUTHORS.rst
-include CONTRIBUTING.rst
-include HISTORY.rst
+include *.rst
 include LICENSE
-include README.rst
-recursive-include formative *.html *.png *.gif *js *.css *jpg *jpeg *svg *py
+include Makefile
+include manage.py
+include requirements.txt
+include tox.ini
+recursive-include formative *.py *.html
+recursive-include tests *.py

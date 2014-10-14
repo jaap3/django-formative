@@ -1,9 +1,7 @@
-.. :changelog:
-
 History
 -------
 
-0.1.0 (2014-08-11)
-++++++++++++++++++
+0.1 (unreleased)
+****************
 
-* First release on PyPI.
+* First release

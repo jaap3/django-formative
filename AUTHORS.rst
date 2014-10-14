@@ -1,13 +1,9 @@
-=======
-Credits
-=======
-
 Development Lead
 ----------------
 
-* Jaap Roes <jaap.roes@gmail.com>
+* Jaap Roes <jaap.roes <at> gmail.com>
 
 Contributors
 ------------
 
-None yet. Why not be the first?
+* None yet, are you going to be the first?
