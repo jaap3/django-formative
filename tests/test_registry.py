@@ -43,7 +43,8 @@ class TestCustomClassRegistry(TestCase):
         self.assertTrue('simple-custom' in registry)
 
     def test_is_correct_instance(self):
-        self.assertIsInstance(registry.get('simple-custom'), CustomFormativeType)
+        self.assertIsInstance(
+            registry.get('simple-custom'), CustomFormativeType)
 
     def test_get_form(self):
         self.assertEqual(registry.get('simple-custom').form, SimpleForm)

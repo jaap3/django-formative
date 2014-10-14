@@ -8,7 +8,7 @@ class TestFormativeTypeValidation(TestCase):
         blob = FormativeBlob(unique_identifier='invalid',
                              formative_type='invalid',
                              json_data='{}')
-        self.assertRaisesRegexp(ValidationError, 'Invalid formative type',
+        self.assertRaisesRegexp(ValidationError, 'Select a valid type',
                                 blob.full_clean)
 
     def test_valid_type(self):

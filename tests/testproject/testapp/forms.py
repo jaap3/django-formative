@@ -27,6 +27,4 @@ class FancyForm(FormativeBlobForm):
 
 
 class BookRelatedForm(FormativeBlobForm):
-    book_1 = forms.ModelChoiceField(queryset=Book.objects.all())
-    book_2 = forms.ModelChoiceField(queryset=Book.objects.all())
-    book_3 = forms.ModelChoiceField(queryset=Book.objects.all())
+    book = forms.ModelChoiceField(queryset=Book.objects.all())

@@ -9,10 +9,9 @@ from formative import registry
 
 
 def formative_type_validator(value):
+    invalid_choice = _('Select a valid type. %(value)s is not a known type.')
     if value not in registry:
-        raise ValidationError(_(
-            'Invalid formative type \'%(type)s\' is not one of the'
-            ' available types.') % {'type': value})
+        raise ValidationError(invalid_choice % {'value': value})
 
 
 class BaseFormativeBlob(models.Model):

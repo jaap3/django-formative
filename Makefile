@@ -14,10 +14,10 @@ tox:
 	tox
 
 coverage:
-	coverage run --source djrichtextfield --branch manage.py test
+	coverage run --source formative --branch manage.py test
 	coverage report -m
 	coverage html
 	python -mwebbrowser htmlcov/index.html
 
 lint:
-	flake8 djrichtextfield testproject
+	flake8 formative tests

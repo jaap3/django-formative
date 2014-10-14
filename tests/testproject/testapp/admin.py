@@ -97,7 +97,7 @@ class InlineFormativeBlobAdminFormSet(InlineAdminFormSet):
 
 class BookAdmin(admin.ModelAdmin):
     inlines = [InlineFormativeBlobAdmin]
-    
+
     def get_inline_formsets(
             self, request, formsets, inline_instances, obj=None):
         inline_admin_formsets = []
