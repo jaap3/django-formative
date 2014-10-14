@@ -26,7 +26,10 @@ class BaseFormativeBlob(models.Model):
         Restores the stored json data to the correct python objects.
         """
         data = {}
-        json_data = json.loads(self.json_data)
+        try:
+            json_data = json.loads(self.json_data)
+        except ValueError:
+            json_data = {}
         form = (registry.get(self.formative_type).form(initial=json_data))
         for key, value in json_data.items():
             try:
@@ -58,7 +61,7 @@ class InlineFormativeBlob(BaseFormativeBlob):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-    sortorder = models.PositiveIntegerField(editable=False, default=0)
+    sortorder = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = _('inline formative blob')

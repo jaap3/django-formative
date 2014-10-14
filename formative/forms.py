@@ -13,9 +13,8 @@ class FormativeForm(forms.ModelForm):
             if initial is not None:
                 data.update(initial)
             initial = data
-        super(FormativeForm, self).__init__(instance=instance,
-                                            initial=initial,
-                                            *args, **kwargs)
+        super(FormativeForm, self).__init__(
+            instance=instance, initial=initial, *args, **kwargs)
 
     def save(self, commit=True):
         data = {}

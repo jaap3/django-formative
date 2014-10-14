@@ -17,7 +17,7 @@ class FancyForm(FormativeBlobForm):
     is_fancy = forms.BooleanField(initial=True, required=False)
     favorite_color = forms.ChoiceField(choices=[
         ('red', 'Red'), ('geen', 'Green'), ('blue', 'Blue')])
-    date_of_birth = forms.DateField(widget=SelectDateWidget)
+    date_of_birth = forms.DateField(widget=SelectDateWidget, required=False)
     income = forms.DecimalField()
     number_of_fingers = forms.IntegerField(initial=10)
     family_members = forms.MultipleChoiceField(choices=[
@@ -27,4 +27,6 @@ class FancyForm(FormativeBlobForm):
 
 
 class BookRelatedForm(FormativeBlobForm):
-    book = forms.ModelChoiceField(queryset=Book.objects.all())
+    book_1 = forms.ModelChoiceField(queryset=Book.objects.all())
+    book_2 = forms.ModelChoiceField(queryset=Book.objects.all())
+    book_3 = forms.ModelChoiceField(queryset=Book.objects.all())
