@@ -8,8 +8,6 @@ class FormativeTypeForm(forms.Form):
 
 
 class FormativeForm(forms.ModelForm):
-    formative_type = None
-
     def __init__(self, *args, **kwargs):
         instance = kwargs.pop('instance', None)
         initial = kwargs.pop('initial', None)
@@ -33,4 +31,4 @@ class FormativeForm(forms.ModelForm):
 class FormativeBlobForm(FormativeForm):
     class Meta:
         model = FormativeBlob
-        fields = ['unique_identifier']
+        exclude = ['formative_type', 'json_data']

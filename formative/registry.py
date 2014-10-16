@@ -2,12 +2,13 @@ from collections import Mapping
 from django.utils.encoding import python_2_unicode_compatible
 from formative.exceptions import FormativeTypeNotRegistered
 
-_registry = set()
+_registry = {}
 
 
 @python_2_unicode_compatible
 class FormativeType(object):
     def __init__(self, name, form, fieldsets=None, verbose_name=None):
+        self._form = None
         self.name = name
         self.form = form
         self.fieldsets = fieldsets
@@ -15,6 +16,7 @@ class FormativeType(object):
 
     @property
     def form(self):
+        # Set type in the getter because a form may be registered twice
         return self._set_formative_type(self._form)
 
     @form.setter
@@ -22,7 +24,7 @@ class FormativeType(object):
         self._form = form
 
     def _set_formative_type(self, form):
-        form.formative_type = self.name
+        form.formative_type = self
         return form
 
     def get_form(self, request, obj=None, **kwargs):
@@ -43,13 +45,12 @@ class FormativeType(object):
 
 class FormativeTypeRegistry(Mapping):
     def __iter__(self):
-        for formative_type in _registry:
-            yield formative_type.name
+        for formative_type in _registry.keys():
+            yield formative_type
 
     def __getitem__(self, item):
-        for formative_type in _registry:
-            if formative_type.name == item:
-                return formative_type
+        if item in _registry:
+            return _registry[item]
         raise FormativeTypeNotRegistered
 
     def __len__(self):
@@ -57,8 +58,8 @@ class FormativeTypeRegistry(Mapping):
 
 
 def register(name, form, fieldsets=None, verbose_name=None, cls=FormativeType):
-    _registry.add(cls(name, form, fieldsets=fieldsets,
-                      verbose_name=verbose_name))
+    _registry[name] = cls(
+        name, form, fieldsets=fieldsets, verbose_name=verbose_name)
 
 
 def autodiscover():

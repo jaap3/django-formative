@@ -14,19 +14,30 @@ class TestRegistry(TestCase):
         self.assertEqual(registry.get('simple').form, SimpleForm)
 
     def test_form_has_formative_type_set(self):
-        self.assertEqual(registry.get('simple').form.formative_type, 'simple')
+        self.assertEqual(
+            registry.get('simple').form.formative_type, registry['simple'])
 
     def test_str(self):
         self.assertEqual(str(registry.get('simple')), 'Simple')
 
     def test_len(self):
-        self.assertEqual(len(registry), 11)
+        self.assertEqual(len(registry), 7)
 
 
-class TestRegister(TestCase):
-    def test_register(self):
+class TestRegisterSameFormTwice(TestCase):
+    def setUp(self):
         register('simple-2', SimpleForm)
+
+    def test_in_registry(self):
         self.assertTrue('simple-2' in registry)
+
+    def test_type_is_set_correctly(self):
+        self.assertEqual(
+            registry['simple-2'].form.formative_type, registry['simple-2'])
+
+    def test_type_is_set_correctly_for_other_type(self):
+        self.assertEqual(
+            registry['simple'].form.formative_type, registry['simple'])
 
 
 class CustomFormativeType(FormativeType):
@@ -50,8 +61,9 @@ class TestCustomClassRegistry(TestCase):
         self.assertEqual(registry.get('simple-custom').form, SimpleForm)
 
     def test_form_has_formative_type_set(self):
-        self.assertEqual(registry.get('simple-custom').form.formative_type,
-                         'simple-custom')
+        self.assertIsInstance(
+            registry.get('simple-custom').form.formative_type,
+            CustomFormativeType)
 
     def test_str(self):
         self.assertEqual(str(registry.get('simple-custom')), 'Custom')

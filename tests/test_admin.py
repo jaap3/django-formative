@@ -124,18 +124,3 @@ class TestGetFieldsets(TestCase):
             ('Title', {'fields': ['title']}),
             ('Body', {'fields': ['body']})
         ])
-
-
-class TestGetFormativeTypeDisplay(TestCase):
-    def setUp(self):
-        self.admin = FormativeBlobAdmin(FormativeBlob, AdminSite())
-
-    def test_get_verbose_name(self):
-        f = registry.get('simple').form({
-            'unique_identifier': 'test-identifier',
-            'name': 'test-name'
-        })
-        f.full_clean()
-        obj = f.save()
-        self.assertEqual(self.admin.get_type_display(obj),
-                         registry.get('simple').verbose_name)

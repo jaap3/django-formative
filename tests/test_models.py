@@ -5,11 +5,11 @@ from formative.models import FormativeBlob
 
 class TestFormativeTypeValidation(TestCase):
     def test_invalid_type(self):
-        blob = FormativeBlob(unique_identifier='invalid',
-                             formative_type='invalid',
-                             json_data='{}')
-        self.assertRaisesRegexp(ValidationError, 'Select a valid type',
-                                blob.full_clean)
+        with self.assertRaises(ValidationError) as e:
+            FormativeBlob(unique_identifier='invalid',
+                          formative_type='invalid',
+                          json_data='{}')
+        self.assertEqual(e.exception.messages, ['Invalid type: invalid.'])
 
     def test_valid_type(self):
         blob = FormativeBlob(unique_identifier='valid',
@@ -29,4 +29,4 @@ class TestFormativeBlob(TestCase):
         self.blob.save()
 
     def test_str(self):
-        self.assertEqual(str(self.blob), 'identifier (simple)')
+        self.assertEqual(str(self.blob), 'identifier (Simple)')
