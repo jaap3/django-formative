@@ -5,18 +5,13 @@ from django.contrib.admin.options import IS_POPUP_VAR
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
+from formative.fields import FormativeTypeField
 from formative.models import FormativeBlob
 from formative import registry
 
 
 class FormativeTypeForm(forms.Form):
-    formative_type = forms.ChoiceField(_('formative type'))
-
-    def __init__(self, *args, **kwargs):
-        super(FormativeTypeForm, self).__init__(*args, **kwargs)
-        # Set the choices here so they have had time to register.
-        self.fields['formative_type'].choices = sorted(
-            registry.items())
+    formative_type = FormativeTypeField()
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
@@ -48,9 +43,7 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         """
         form = FormativeTypeForm(request.GET)
         if form.is_valid():
-            ft = form.cleaned_data['formative_type']
-            if ft:
-                return registry.get(ft)
+            return form.cleaned_data['formative_type']
         return None
 
     def get_type(self, request, obj):

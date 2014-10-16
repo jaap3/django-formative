@@ -16,8 +16,8 @@ class TestFormativeTypeFormValidation(TestCase):
         f = FormativeTypeForm({'formative_type': 'invalid'})
         self.assertFalse(f.is_valid())
         self.assertEqual(f.errors, {
-            'formative_type': ['Select a valid choice. '
-                               'invalid is not one of the available choices.']
+            'formative_type': [
+                'Select a valid type. invalid is not a known type.']
         })
 
     def test_valid_type(self):
@@ -46,8 +46,7 @@ class TestSelectType(TestCase):
         }))
         self.assertEqual(response.context_data['adminform'].form.errors, {
             'formative_type': [
-                'Select a valid choice.'
-                ' invalid is not one of the available choices.']
+                'Select a valid type. invalid is not a known type.']
         })
 
     def test_add_without_next_param_and_invalid_type(self):

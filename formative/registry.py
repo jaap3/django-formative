@@ -1,5 +1,6 @@
 from collections import Mapping
 from django.utils.encoding import python_2_unicode_compatible
+from formative.exceptions import FormativeTypeNotRegistered
 
 _registry = set()
 
@@ -49,7 +50,7 @@ class FormativeTypeRegistry(Mapping):
         for formative_type in _registry:
             if formative_type.name == item:
                 return formative_type
-        raise KeyError
+        raise FormativeTypeNotRegistered
 
     def __len__(self):
         return len(_registry)

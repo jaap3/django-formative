@@ -1,0 +1,2 @@
+class FormativeTypeNotRegistered(KeyError):
+    pass
