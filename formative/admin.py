@@ -20,8 +20,7 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Get a form for the add/change view.
         """
         ft = (obj.formative_type if obj else get_type_from_request(request))
-        if ft:
-            kwargs['form'] = ft.get_form(request, obj, **kwargs)
+        kwargs['form'] = ft.get_form(request, obj, **kwargs)
         return super(
             FormativeBlobAdmin, self).get_form(request, obj=obj, **kwargs)
 
@@ -30,21 +29,19 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Get fieldset definition for the add/change view.
         """
         ft = (obj.formative_type if obj else get_type_from_request(request))
-        fieldsets = None
-        if ft:
-            fieldsets = ft.get_fieldsets(request, obj)
-            if fieldsets:
-                # user defined fieldsets, make sure unique_identifier
-                # is in there!
-                found = False
-                for fieldset in fieldsets:
-                    if 'unique_identifier' in fieldset[1].get('fields', []):
-                        found = True
-                        break
-                if not found:
-                    fieldsets = ([(None, {'fields': ['unique_identifier']})]
-                                 + list(fieldsets))
-        if fieldsets is None:
+        fieldsets = ft.get_fieldsets(request, obj)
+        if fieldsets:
+            # user defined fieldsets, make sure unique_identifier
+            # is in there!
+            found = False
+            for fieldset in fieldsets:
+                if 'unique_identifier' in fieldset[1].get('fields', []):
+                    found = True
+                    break
+            if not found:
+                fieldsets = ([(None, {'fields': ['unique_identifier']})]
+                             + list(fieldsets))
+        else:
             fieldsets = super(
                 FormativeBlobAdmin, self).get_fieldsets(request, obj)
         return fieldsets

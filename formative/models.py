@@ -38,11 +38,6 @@ class FormativeTypeModelField(models.Field):
     def get_internal_type(self):
         return 'CharField'
 
-    def from_db_value(self, value, connection):
-        if value is None:
-            return value
-        return registry[value]
-
     def to_python(self, value):
         if value is None or isinstance(value, FormativeType):
             return value
@@ -68,10 +63,7 @@ class BaseFormativeBlob(models.Model):
         Restores the stored json data to the correct python objects.
         """
         data = {}
-        try:
-            json_data = json.loads(self.json_data)
-        except ValueError:
-            json_data = {}
+        json_data = json.loads(self.json_data)
         form = self.formative_type.form(initial=json_data)
         for key, value in json_data.items():
             try:
