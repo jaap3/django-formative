@@ -9,6 +9,7 @@ from formative import registry
 from formative.exceptions import FormativeTypeNotRegistered
 from formative.fields import FormativeTypeField
 from formative.registry import FormativeType
+from formative.utils import formative_form_factory
 
 
 class FormativeTypeModelField(models.Field):
@@ -64,7 +65,9 @@ class BaseFormativeBlob(models.Model):
         """
         data = {}
         json_data = json.loads(self.json_data)
-        form = self.formative_type.form(initial=json_data)
+        form = formative_form_factory(
+            self.__class__, form=self.formative_type.form)
+        form = form(initial=json_data)
         for key, value in json_data.items():
             try:
                 data[key] = form.fields[key].to_python(value)

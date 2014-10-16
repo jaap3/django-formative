@@ -6,7 +6,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from formative.forms import FormativeTypeForm
 from formative.models import FormativeBlob
-from formative.utils import get_type_from_request
+from formative.utils import get_type_from_request, formative_form_factory
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
@@ -20,7 +20,8 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Get a form for the add/change view.
         """
         ft = (obj.formative_type if obj else get_type_from_request(request))
-        kwargs['form'] = ft.get_form(request, obj, **kwargs)
+        kwargs['form'] = formative_form_factory(
+            self.model, ft.get_form(request, obj, **kwargs))
         return super(
             FormativeBlobAdmin, self).get_form(request, obj=obj, **kwargs)
 

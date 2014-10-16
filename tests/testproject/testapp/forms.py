@@ -1,19 +1,19 @@
 from django import forms
-from formative.forms import FormativeBlobForm
+from formative.forms import FormativeForm
 from django.forms.extras import SelectDateWidget
 from tests.testproject.testapp.models import Book
 
 
-class SimpleForm(FormativeBlobForm):
+class SimpleForm(FormativeForm):
     name = forms.CharField()
 
 
-class FieldsetForm(FormativeBlobForm):
+class FieldsetForm(FormativeForm):
     title = forms.CharField()
     body = forms.CharField(widget=forms.Textarea)
 
 
-class FancyForm(FormativeBlobForm):
+class FancyForm(FormativeForm):
     is_fancy = forms.BooleanField(initial=True, required=False)
     favorite_color = forms.ChoiceField(choices=[
         ('red', 'Red'), ('geen', 'Green'), ('blue', 'Blue')])
@@ -26,5 +26,5 @@ class FancyForm(FormativeBlobForm):
     time_of_day = forms.TimeField()
 
 
-class BookRelatedForm(FormativeBlobForm):
+class BookRelatedForm(FormativeForm):
     book = forms.ModelChoiceField(queryset=Book.objects.all())

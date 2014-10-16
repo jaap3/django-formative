@@ -1,6 +1,5 @@
 from django import forms
 from formative.fields import FormativeTypeField
-from formative.models import FormativeBlob
 
 
 class FormativeTypeForm(forms.Form):
@@ -26,9 +25,3 @@ class FormativeForm(forms.ModelForm):
         self.instance.formative_type = self.formative_type
         self.instance.data = data
         return super(FormativeForm, self).save(commit=commit)
-
-
-class FormativeBlobForm(FormativeForm):
-    class Meta:
-        model = FormativeBlob
-        exclude = ['formative_type', 'json_data']
