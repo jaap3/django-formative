@@ -1,5 +1,10 @@
 from django import forms
+from formative.fields import FormativeTypeField
 from formative.models import FormativeBlob
+
+
+class FormativeTypeForm(forms.Form):
+    formative_type = FormativeTypeField()
 
 
 class FormativeForm(forms.ModelForm):

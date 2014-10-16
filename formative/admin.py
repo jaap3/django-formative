@@ -1,17 +1,12 @@
-from django import forms
 from django.contrib import admin
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
-from formative.fields import FormativeTypeField
+from formative.forms import FormativeTypeForm
 from formative.models import FormativeBlob
 from formative import registry
-
-
-class FormativeTypeForm(forms.Form):
-    formative_type = FormativeTypeField()
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
