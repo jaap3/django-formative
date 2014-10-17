@@ -60,7 +60,7 @@ class FormativeTypeRegistry(Sized, Iterable, Container):
 
 def autodiscover():
     """
-    Auto-discover INSTALLED_APPS formative_forms.py modules and fail silently
+    Auto-discover INSTALLED_APPS formative_types.py modules and fail silently
     if not present.
     """
     from django.conf import settings
@@ -69,12 +69,12 @@ def autodiscover():
 
     for app in settings.INSTALLED_APPS:
         mod = import_module(app)
-        # Attempt to import the app's formative module.
+        # Attempt to import the app's formative_types module.
         try:
-            import_module('%s.formative_forms' % app)
+            import_module('%s.formative_types' % app)
         except:
             # Decide whether to bubble up this error. If the app just
-            # doesn't have an formative module, we can ignore the error
+            # doesn't have an formative_types module, we can ignore the error
             # attempting to import it, otherwise we want it to bubble up.
-            if module_has_submodule(mod, 'formative_forms'):
+            if module_has_submodule(mod, 'formative_types'):
                 raise  # pragma: nocover
