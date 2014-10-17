@@ -8,11 +8,8 @@ script:
   - tox
 
 env:
-  - TOXENV=py26-dj14
-  - TOXENV=py26-dj15
-  - TOXENV=py27-dj16
-  - TOXENV=py33-dj16
   - TOXENV=py27-dj17
+  - TOXENV=py33-dj17
   - TOXENV=py34-dj17
   - TOXENV=flake8
   - TOXENV=coverage
