@@ -1,6 +1,6 @@
 from django.test import TestCase
 from formative import autodiscover
-from formative.models import FormativeBlob
+from formative.models import FormativeBlob, InlineFormativeBlob
 from formative.registry import FormativeType
 from tests.testproject.testapp.forms import SimpleForm
 
@@ -18,25 +18,34 @@ class ReuseFormType(FormativeType):
     form_class = SimpleForm
 
 
-class TestRegistry(TestCase):
+class TestFormativeBlobRegistry(TestCase):
+    blob_cls = FormativeBlob
+
     def test_is_registered(self):
-        self.assertTrue('simple' in FormativeBlob.registry)
+        self.assertTrue('simple' in self.blob_cls.registry)
 
     def test_form(self):
         self.assertTrue(issubclass(
-            FormativeBlob.registry.get('simple').form, SimpleForm))
+            self.blob_cls.registry.get('simple').form, SimpleForm))
 
     def test_form_has_formative_type_set(self):
         self.assertEqual(
-            FormativeBlob.registry.get('simple').form.formative_type,
-            FormativeBlob.registry.get('simple'))
+            self.blob_cls.registry.get('simple').form.formative_type,
+            self.blob_cls.registry.get('simple'))
 
     def test_str(self):
         self.assertEqual(
-            str(FormativeBlob.registry.get('simple')), 'Simple')
+            str(self.blob_cls.registry.get('simple')), 'Simple')
 
     def test_len(self):
-        self.assertEqual(len(FormativeBlob.registry), 7)
+        self.assertEqual(len(FormativeBlob.registry), 6)
+
+
+class TestInlineFormativeBlobRegistry(TestCase):
+    blob_cls = InlineFormativeBlob
+
+    def test_len(self):
+        self.assertEqual(len(InlineFormativeBlob.registry), 2)
 
 
 class TestCustomClassRegistry(TestCase):
