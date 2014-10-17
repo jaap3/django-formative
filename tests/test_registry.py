@@ -6,6 +6,7 @@ from tests.testproject.testapp.forms import SimpleForm
 
 autodiscover()
 
+
 class CustomFormativeType(FormativeType):
     name = 'simple-custom'
     form_class = SimpleForm

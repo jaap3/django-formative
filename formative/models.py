@@ -7,7 +7,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from formative.fields import FormativeTypeField
 from formative.registry import FormativeTypeRegistry
-from formative.utils import formative_form_factory
 
 
 class BaseFormativeBlob(models.Model):

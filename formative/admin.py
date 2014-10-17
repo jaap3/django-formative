@@ -29,15 +29,18 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         """
         Get a form for the add/change view.
         """
-        ft = (obj.formative_type if obj else self.get_type_from_request(request))
+        ft = (obj.formative_type if obj
+              else self.get_type_from_request(request))
         kwargs['form'] = ft.form
-        return super(FormativeBlobAdmin, self).get_form(request, obj=obj, **kwargs)
+        return super(FormativeBlobAdmin, self).get_form(
+            request, obj=obj, **kwargs)
 
     def get_fieldsets(self, request, obj=None):
         """
         Get fieldset definitions for the add/change view.
         """
-        ft = (obj.formative_type if obj else self.get_type_from_request(request))
+        ft = (obj.formative_type if obj
+              else self.get_type_from_request(request))
         fieldsets = ft.fieldsets
         if fieldsets:
             # user defined fieldsets, make sure unique_identifier
@@ -51,7 +54,8 @@ class FormativeBlobAdmin(admin.ModelAdmin):
                 fieldsets = ([(None, {'fields': ['unique_identifier']})]
                              + list(fieldsets))
         else:
-            fieldsets = super(FormativeBlobAdmin, self).get_fieldsets(request, obj)
+            fieldsets = super(FormativeBlobAdmin, self).get_fieldsets(
+                request, obj)
         return fieldsets
 
     def add_view(self, request, **kwargs):
