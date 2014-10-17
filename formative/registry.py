@@ -35,6 +35,9 @@ class FormativeType(object):
 
 
 class FormativeTypeRegistry(Sized, Iterable, Container):
+    """
+    Formative type registry
+    """
     def __init__(self):
         self.__registry = {}
 
@@ -48,10 +51,18 @@ class FormativeTypeRegistry(Sized, Iterable, Container):
     def __len__(self):
         return len(self.__registry)
 
-    def register(self, name, cls, model):
-        self.__registry[name] = cls(model)
+    def register(self, cls, model):
+        """
+        Register a type
+        """
+        self.__registry[cls.name] = cls(model)
 
     def get(self, name):
+        """
+        Get a type from the registry using its name.
+        Raises FormativeTypeNotRegistered if the name is not found in the
+        registry.
+        """
         try:
             return self.__registry[name]
         except KeyError:

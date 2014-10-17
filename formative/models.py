@@ -10,14 +10,20 @@ from formative.registry import FormativeTypeRegistry
 
 
 class BaseFormativeBlob(models.Model):
+    """
+    Base class for all formative blob types
+    """
     formative_type = FormativeTypeField(_('type'))
     json_data = models.TextField()
     registry = FormativeTypeRegistry()
 
     @classmethod
     def register(cls, *klasses):
+        """
+        Register a formative type for use with this model
+        """
         for klass in klasses:
-            cls.registry.register(klass.name, klass, cls)
+            cls.registry.register(klass, cls)
 
     @property
     def data(self):
@@ -36,6 +42,9 @@ class BaseFormativeBlob(models.Model):
 
     @data.setter
     def data(self, value):
+        """
+        Store a python data dict as json.
+        """
         self.json_data = json.dumps(value, cls=DjangoJSONEncoder)
 
     class Meta:
@@ -43,6 +52,9 @@ class BaseFormativeBlob(models.Model):
 
 
 class FormativeBlob(BaseFormativeBlob):
+    """
+    Simple standalone formative blob
+    """
     unique_identifier = models.CharField(
         _('identifier'), max_length=150, unique=True)
 
@@ -55,6 +67,9 @@ class FormativeBlob(BaseFormativeBlob):
 
 
 class InlineFormativeBlob(BaseFormativeBlob):
+    """
+    Formative blob that can be associated with other models
+    """
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
