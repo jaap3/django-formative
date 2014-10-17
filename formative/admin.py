@@ -7,7 +7,8 @@ from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from formative.forms import FormativeTypeForm
-from formative.formsets import FormativeFormset, InlineFormativeBlobAdminFormSet
+from formative.formsets import (
+    FormativeFormset, InlineFormativeBlobAdminFormSet)
 from formative.models import FormativeBlob, InlineFormativeBlob
 
 
