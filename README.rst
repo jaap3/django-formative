@@ -14,11 +14,6 @@ django-formative
 
 Flexible non-model data objects in Django's admin using Django forms.
 
-Documentation
--------------
-
-The full documentation is at https://django-formative.readthedocs.org.
-
 Quickstart
 ----------
 
@@ -33,20 +28,22 @@ Then add it to your Django project's `INSTALLED_APPS`::
 Run `syncdb` or `migrate` to get the database up to date.
 
 Now it's time to define a *formative type*. Create a file called
-`formative_forms.py` in a app that's in the `INSTALLED_APPS` list.
+`formative_types.py` in a app that's in the `INSTALLED_APPS` list.
 In this file you can define forms and register them with formative::
 
-    import formative
     from django import forms
-    from formative.forms import FormativeBlobForm
+    from formative.forms import FormativeForm
+    from formative.models import FormativeBlob
+    from formative.registry import FormativeType
 
-
-    class SimpleForm(FormativeBlobForm):
+    class SimpleForm(FormativeForm):
         name = forms.CharField()
         body = forms.CharField(widget=forms.Textarea)
 
+    class SimpleType(FormativeType):
+        form_class = SimpleForm
 
-    formative.register('simple', SimpleForm)
+    FormativeBlob.register(SimpleType)
 
 Then add the following to your project's `urls.py`, right next to
 the call to `admin.autodiscover()`::
@@ -56,6 +53,9 @@ the call to `admin.autodiscover()`::
 
 That's it. Now you can create formative objects in the admin using your
 simple form.
+
+Template tags
+-------------
 
 You probably want to use the data in some way. Simply get an instance of
 a FormativeBlob by its unique_identifier and access the data property as
