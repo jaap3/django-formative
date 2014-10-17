@@ -1,11 +1,11 @@
 from django.template import Template, Context
 from django.test import TestCase
-from formative import registry
+from formative.models import FormativeBlob
 
 
 class TestFormativeTags(TestCase):
     def setUp(self):
-        f = registry.get('simple').form({
+        f = FormativeBlob.registry.get('simple').form({
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
         })

@@ -1,69 +1,81 @@
 from django.test import TestCase
-from formative import registry, register, autodiscover
+from formative import autodiscover
+from formative.models import FormativeBlob
 from formative.registry import FormativeType
 from tests.testproject.testapp.forms import SimpleForm
 
 autodiscover()
 
+class CustomFormativeType(FormativeType):
+    name = 'simple-custom'
+    form_class = SimpleForm
+    verbose_name = 'Custom'
+
+
+class ReuseFormType(FormativeType):
+    name = 'simple-2'
+    form_class = SimpleForm
+
 
 class TestRegistry(TestCase):
     def test_is_registered(self):
-        self.assertTrue('simple' in registry)
+        self.assertTrue('simple' in FormativeBlob.registry)
 
-    def test_get_form(self):
-        self.assertEqual(registry.get('simple').form, SimpleForm)
+    def test_form(self):
+        self.assertTrue(issubclass(
+            FormativeBlob.registry.get('simple').form, SimpleForm))
 
     def test_form_has_formative_type_set(self):
         self.assertEqual(
-            registry.get('simple').form.formative_type, registry['simple'])
+            FormativeBlob.registry.get('simple').form.formative_type,
+            FormativeBlob.registry.get('simple'))
 
     def test_str(self):
-        self.assertEqual(str(registry.get('simple')), 'Simple')
+        self.assertEqual(
+            str(FormativeBlob.registry.get('simple')), 'Simple')
 
     def test_len(self):
-        self.assertEqual(len(registry), 7)
-
-
-class TestRegisterSameFormTwice(TestCase):
-    def setUp(self):
-        register('simple-2', SimpleForm)
-
-    def test_in_registry(self):
-        self.assertTrue('simple-2' in registry)
-
-    def test_type_is_set_correctly(self):
-        self.assertEqual(
-            registry['simple-2'].form.formative_type, registry['simple-2'])
-
-    def test_type_is_set_correctly_for_other_type(self):
-        self.assertEqual(
-            registry['simple'].form.formative_type, registry['simple'])
-
-
-class CustomFormativeType(FormativeType):
-    def __init__(self, name, form, fieldsets=None, verbose_name=None):
-        super(CustomFormativeType, self).__init__(name, form)
-        self.verbose_name = 'Custom'
+        self.assertEqual(len(FormativeBlob.registry), 7)
 
 
 class TestCustomClassRegistry(TestCase):
     def setUp(self):
-        register('simple-custom', SimpleForm, cls=CustomFormativeType)
+        FormativeBlob.register(CustomFormativeType)
 
     def test_is_registered(self):
-        self.assertTrue('simple-custom' in registry)
+        self.assertTrue('simple-custom' in FormativeBlob.registry)
 
     def test_is_correct_instance(self):
         self.assertIsInstance(
-            registry.get('simple-custom'), CustomFormativeType)
+            FormativeBlob.registry.get('simple-custom'), CustomFormativeType)
 
-    def test_get_form(self):
-        self.assertEqual(registry.get('simple-custom').form, SimpleForm)
+    def test_form(self):
+        self.assertTrue(issubclass(
+            FormativeBlob.registry.get('simple-custom').form, SimpleForm))
 
     def test_form_has_formative_type_set(self):
         self.assertIsInstance(
-            registry.get('simple-custom').form.formative_type,
+            FormativeBlob.registry.get('simple-custom').form.formative_type,
             CustomFormativeType)
 
     def test_str(self):
-        self.assertEqual(str(registry.get('simple-custom')), 'Custom')
+        self.assertEqual(
+            str(FormativeBlob.registry.get('simple-custom')), 'Custom')
+
+
+class TestRegisterSameFormTwice(TestCase):
+    def setUp(self):
+        FormativeBlob.register(ReuseFormType)
+
+    def test_in_registry(self):
+        self.assertTrue('simple-2' in FormativeBlob.registry)
+
+    def test_type_is_set_correctly(self):
+        self.assertEqual(
+            FormativeBlob.registry.get('simple-2').form.formative_type,
+            FormativeBlob.registry.get('simple-2'))
+
+    def test_type_is_set_correctly_for_other_type(self):
+        self.assertEqual(
+            FormativeBlob.registry.get('simple-custom').form.formative_type,
+            FormativeBlob.registry.get('simple-custom'))

@@ -1,9 +1,9 @@
 from django import forms
-from formative.fields import FormativeTypeField
 
 
-class FormativeTypeForm(forms.Form):
-    formative_type = FormativeTypeField()
+class FormativeTypeForm(forms.ModelForm):
+    class Meta:
+        fields = ['formative_type']
 
 
 class FormativeForm(forms.ModelForm):

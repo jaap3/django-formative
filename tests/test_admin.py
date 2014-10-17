@@ -1,6 +1,5 @@
 from django.contrib.admin import AdminSite
 from django.test import RequestFactory, TestCase
-from formative import registry
 from formative.admin import FormativeTypeForm, FormativeBlobAdmin
 from formative.models import FormativeBlob
 from tests.testproject.testapp.forms import SimpleForm
@@ -9,20 +8,6 @@ from tests.testproject.testapp.forms import SimpleForm
 class MockUser(object):
     def has_perm(self, *args, **kwargs):
         return True
-
-
-class TestFormativeTypeFormValidation(TestCase):
-    def test_invalid_type(self):
-        f = FormativeTypeForm({'formative_type': 'invalid'})
-        self.assertFalse(f.is_valid())
-        self.assertEqual(f.errors, {
-            'formative_type': [
-                'Select a valid type. invalid is not a known type.']
-        })
-
-    def test_valid_type(self):
-        f = FormativeTypeForm({'formative_type': 'simple'})
-        self.assertTrue(f.is_valid())
 
 
 class TestSelectType(TestCase):
@@ -46,7 +31,8 @@ class TestSelectType(TestCase):
         }))
         self.assertEqual(response.context_data['adminform'].form.errors, {
             'formative_type': [
-                'Select a valid type. invalid is not a known type.']
+                'Select a valid choice. invalid is not one of the'
+                ' available choices.']
         })
 
     def test_add_without_next_param_and_invalid_type(self):
@@ -73,7 +59,7 @@ class TestAddAndChange(TestCase):
             'formative_type': 'simple',
         })
         self.request.user = MockUser()
-        self.SimpleForm = registry.get('simple').form
+        self.SimpleForm = FormativeBlob.registry.get('simple').form
 
     def test_add_gets_correct_form(self):
         response = self.admin.add_view(self.request)

@@ -1,65 +1,61 @@
-from collections import Mapping
+from collections import Container, Iterable, Sized
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils import six
+from django.utils.functional import cached_property
+from django.utils.text import camel_case_to_spaces
 from formative.exceptions import FormativeTypeNotRegistered
+from formative.utils import formative_form_factory
 
-_registry = {}
+
+class FormativeTypeBase(type):
+    def __new__(cls, name, parents, attrs):
+        if 'name' not in attrs:
+            attrs['name'] = camel_case_to_spaces(name).lower()
+        if 'verbose_name' not in attrs:
+            attrs['verbose_name'] = attrs['name'].title()
+        if 'fieldsets' not in attrs:
+            attrs['fieldsets'] = None
+        return super(FormativeTypeBase, cls).__new__(cls, name, parents, attrs)
 
 
 @python_2_unicode_compatible
+@six.add_metaclass(FormativeTypeBase)
 class FormativeType(object):
-    def __init__(self, name, form, fieldsets=None, verbose_name=None):
-        self._form = None
-        self.name = name
-        self.form = form
-        self.fieldsets = fieldsets
-        self.verbose_name = verbose_name or name.title()
+    def __init__(self, model):
+        self.model = model
 
-    @property
+    @cached_property
     def form(self):
-        # Set type in the getter because a form may be registered twice
-        return self._set_formative_type(self._form)
-
-    @form.setter
-    def form(self, form):
-        self._form = form
-
-    def _set_formative_type(self, form):
+        form = formative_form_factory(self.model, self.form_class)
         form.formative_type = self
         return form
-
-    def get_form(self, request, obj=None, **kwargs):
-        """
-        Helper method for the admin, works like ModelAdmin.get_form
-        """
-        return self.form
-
-    def get_fieldsets(self, request, obj=None, **kwargs):
-        """
-        Helper method for the admin, works like ModelAdmin.get_fieldsets
-        """
-        return self.fieldsets
 
     def __str__(self):
         return self.verbose_name
 
 
-class FormativeTypeRegistry(Mapping):
-    def __iter__(self):
-        for formative_type in _registry.keys():
-            yield formative_type
+class FormativeTypeRegistry(Sized, Iterable, Container):
+    def __init__(self):
+        self.__registry = {}
 
-    def __getitem__(self, item):
-        if item in _registry:
-            return _registry[item]
-        raise FormativeTypeNotRegistered
+    def __contains__(self, name):
+        return name in self.__registry
+
+    def __iter__(self):
+        for key, value in sorted(self.__registry.items()):
+            yield value
 
     def __len__(self):
-        return len(_registry)
+        return len(self.__registry)
 
+    def register(self, name, cls, model):
+        self.__registry[name] = cls(model)
 
-def register(name, form, fieldsets=None, verbose_name=None, cls=FormativeType):
-    _registry[name] = cls(
-        name, form, fieldsets=fieldsets, verbose_name=verbose_name)
+    def get(self, name):
+        try:
+            return self.__registry[name]
+        except KeyError:
+            raise FormativeTypeNotRegistered
 
 
 def autodiscover():

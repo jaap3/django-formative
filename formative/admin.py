@@ -1,36 +1,44 @@
 from django.contrib import admin
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IS_POPUP_VAR
+from django.forms.models import modelform_factory
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from formative.forms import FormativeTypeForm
 from formative.models import FormativeBlob
-from formative.utils import get_type_from_request, formative_form_factory
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
     search_fields = ('unique_identifier',)
     list_filter = ('formative_type',)
     list_display = ('unique_identifier', 'formative_type')
-    ordering = ('unique_identifier', 'formative_type')
+    ordering = ('formative_type', 'unique_identifier')
+
+    def get_type_from_request(self, request):
+        """
+        Get formative type from request
+        """
+        form_cls = modelform_factory(self.model, form=FormativeTypeForm)
+        form = form_cls(request.GET)
+        if form.is_valid():
+            return form.cleaned_data['formative_type']
+        return None
 
     def get_form(self, request, obj=None, **kwargs):
         """
         Get a form for the add/change view.
         """
-        ft = (obj.formative_type if obj else get_type_from_request(request))
-        kwargs['form'] = formative_form_factory(
-            self.model, ft.get_form(request, obj, **kwargs))
-        return super(
-            FormativeBlobAdmin, self).get_form(request, obj=obj, **kwargs)
+        ft = (obj.formative_type if obj else self.get_type_from_request(request))
+        kwargs['form'] = ft.form
+        return super(FormativeBlobAdmin, self).get_form(request, obj=obj, **kwargs)
 
     def get_fieldsets(self, request, obj=None):
         """
-        Get fieldset definition for the add/change view.
+        Get fieldset definitions for the add/change view.
         """
-        ft = (obj.formative_type if obj else get_type_from_request(request))
-        fieldsets = ft.get_fieldsets(request, obj)
+        ft = (obj.formative_type if obj else self.get_type_from_request(request))
+        fieldsets = ft.fieldsets
         if fieldsets:
             # user defined fieldsets, make sure unique_identifier
             # is in there!
@@ -43,8 +51,7 @@ class FormativeBlobAdmin(admin.ModelAdmin):
                 fieldsets = ([(None, {'fields': ['unique_identifier']})]
                              + list(fieldsets))
         else:
-            fieldsets = super(
-                FormativeBlobAdmin, self).get_fieldsets(request, obj)
+            fieldsets = super(FormativeBlobAdmin, self).get_fieldsets(request, obj)
         return fieldsets
 
     def add_view(self, request, **kwargs):
@@ -52,7 +59,7 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Checks if a content type is selected, if so delegates to super.
         If not, self.select_content_type_view is called.
         """
-        ft = get_type_from_request(request)
+        ft = self.get_type_from_request(request)
         if ft:
             return super(FormativeBlobAdmin, self).add_view(request, **kwargs)
         else:
@@ -63,10 +70,11 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Used in the add view to render the "select a formative type" form
         and handle its errors.
         """
+        form_cls = modelform_factory(self.model, form=FormativeTypeForm)
         if '_next' in request.GET:
-            form = FormativeTypeForm(request.GET)
+            form = form_cls(request.GET)
         else:
-            form = FormativeTypeForm()
+            form = form_cls()
         opts = self.model._meta
         adminform = helpers.AdminForm(
             form, [(None, {'fields': ['formative_type']})], {}, ())
