@@ -20,7 +20,7 @@ class FormativeTypeField(models.Field):
         """
         Get the formative types for the bound model.
         """
-        for item in self.model().registry:
+        for item in self.model.registry:
             yield (item.name, item.verbose_name)
 
     def deconstruct(self):
@@ -57,7 +57,7 @@ class FormativeTypeField(models.Field):
         if not value or isinstance(value, FormativeType):
             return value or None
         try:
-            return self.model().registry.get(value)
+            return self.model.registry.get(value)
         except FormativeTypeNotRegistered:
             raise ValidationError(
                 _('Invalid type: %(value)s.') % {'value': value})

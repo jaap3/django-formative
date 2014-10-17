@@ -1,4 +1,4 @@
-from formative.models import FormativeBlob
+from formative.models import FormativeBlob, InlineFormativeBlob
 from formative.registry import FormativeType
 from tests.testproject.testapp.forms import (
     SimpleForm, FieldsetForm, FancyForm, BookRelatedForm)
@@ -31,6 +31,12 @@ class FieldsetNoIdentifier(FormativeType):
 class FancyType(FormativeType):
     name = 'fancy'
     form_class = FancyForm
+    fieldsets = [
+        (None, {'fields': ['is_fancy']}),
+        ('Dates & Time', {'fields': ['date_of_birth', 'time_of_day']}),
+        ('Numbers', {'fields': ['number_of_fingers', 'income']}),
+        ('Selects', {'fields': ['favorite_color', 'family_members']}),
+    ]
 
 
 class RelatedType(FormativeType):
@@ -40,5 +46,6 @@ class RelatedType(FormativeType):
 
 FormativeBlob.register(
     SimpleType, FieldsetIdentifier,
-    FieldsetNoIdentifier, FancyType, RelatedType
-)
+    FieldsetNoIdentifier, FancyType, RelatedType)
+
+InlineFormativeBlob.register(SimpleType, FancyType)

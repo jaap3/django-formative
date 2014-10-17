@@ -8,14 +8,14 @@ from formative.utils import formative_form_factory
 
 
 class FormativeTypeBase(type):
-    def __new__(cls, name, parents, attrs):
+    def __new__(mcs, name, bases, attrs):
         if 'name' not in attrs:
             attrs['name'] = camel_case_to_spaces(name).lower()
         if 'verbose_name' not in attrs:
             attrs['verbose_name'] = attrs['name'].title()
         if 'fieldsets' not in attrs:
             attrs['fieldsets'] = None
-        return super(FormativeTypeBase, cls).__new__(cls, name, parents, attrs)
+        return super(FormativeTypeBase, mcs).__new__(mcs, name, bases, attrs)
 
 
 @python_2_unicode_compatible
@@ -26,7 +26,11 @@ class FormativeType(object):
 
     @cached_property
     def form(self):
-        form = formative_form_factory(self.model, self.form_class)
+        return self.get_form()
+
+    def get_form(self, exclude=None):
+        form = formative_form_factory(
+            self.model, self.form_class, exclude=exclude)
         form.formative_type = self
         return form
 

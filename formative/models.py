@@ -4,18 +4,35 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.db.models.base import ModelBase
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from formative.fields import FormativeTypeField
 from formative.registry import FormativeTypeRegistry
 
 
-class BaseFormativeBlob(models.Model):
+class FormativeTypeRegistryMeta(ModelBase):
+    """
+    BaseFormativeBlob metaclass provides a registry for each subclass.
+    """
+    def __new__(mcs, name, bases, attrs):
+        super_new = super(FormativeTypeRegistryMeta, mcs).__new__
+        # Ensure initialization is only performed for subclasses of BaseFormativeBlob
+        parents = [b for b in bases if isinstance(b, FormativeTypeRegistryMeta)]
+        if not parents:
+            return super_new(mcs, name, bases, attrs)
+
+        attrs['registry'] = FormativeTypeRegistry()
+        return super_new(mcs, name, bases, attrs)
+
+
+class BaseFormativeBlob(six.with_metaclass(FormativeTypeRegistryMeta,
+                                           models.Model)):
     """
     Base class for all formative blob types
     """
     formative_type = FormativeTypeField(_('type'))
-    json_data = models.TextField()
-    registry = FormativeTypeRegistry()
+    json_data = models.TextField(default='{}')
 
     @classmethod
     def register(cls, *klasses):
@@ -72,7 +89,7 @@ class InlineFormativeBlob(BaseFormativeBlob):
     """
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey()
     sortorder = models.PositiveIntegerField(_('sortorder'), default=0)
 
     class Meta:

@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IS_POPUP_VAR
+from django.contrib.contenttypes.admin import GenericStackedInline
 from django.forms.models import modelform_factory
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from formative.forms import FormativeTypeForm
-from formative.models import FormativeBlob
+from formative.formsets import FormativeFormset, InlineFormativeBlobAdminFormSet
+from formative.models import FormativeBlob, InlineFormativeBlob
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
@@ -53,10 +55,8 @@ class FormativeBlobAdmin(admin.ModelAdmin):
             if not found:
                 fieldsets = ([(None, {'fields': ['unique_identifier']})]
                              + list(fieldsets))
-        else:
-            fieldsets = super(FormativeBlobAdmin, self).get_fieldsets(
-                request, obj)
-        return fieldsets
+        return fieldsets or super(
+            FormativeBlobAdmin, self).get_fieldsets(request, obj)
 
     def add_view(self, request, **kwargs):
         """
@@ -94,6 +94,37 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         return TemplateResponse(
             request, 'formative/admin/formative_type_form.html',
             context, current_app=self.admin_site.name)
+
+
+class BaseFormativeInline(GenericStackedInline):
+    formset = FormativeFormset
+    extra = 0
+
+
+class FormativeBlobInline(BaseFormativeInline):
+    model = InlineFormativeBlob
+
+
+class InlineFormativeBlobAdmin(admin.ModelAdmin):
+    def get_inline_formsets(self, request, formsets,
+                            inline_instances, obj=None):
+        inline_admin_formsets = []
+        for inline, formset in zip(inline_instances, formsets):
+            if isinstance(inline, BaseFormativeInline):
+                inline_admin_formset = InlineFormativeBlobAdminFormSet(
+                    inline, formset, [], {}, {}, model_admin=self)
+            else:
+                fieldsets = list(
+                    inline.get_fieldsets(request, obj))
+                readonly = list(
+                    inline.get_readonly_fields(request, obj))
+                prepopulated = dict(
+                    inline.get_prepopulated_fields(request, obj))
+                inline_admin_formset = helpers.InlineAdminFormSet(
+                    inline, formset, fieldsets, prepopulated,
+                    readonly, model_admin=self)
+            inline_admin_formsets.append(inline_admin_formset)
+        return inline_admin_formsets
 
 
 admin.site.register(FormativeBlob, FormativeBlobAdmin)
