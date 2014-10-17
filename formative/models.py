@@ -6,6 +6,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models.base import ModelBase
 from django.utils import six
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from formative.fields import FormativeTypeField
 from formative.registry import FormativeTypeRegistry
@@ -26,6 +27,7 @@ class FormativeTypeRegistryMeta(ModelBase):
         return super_new(mcs, name, bases, attrs)
 
 
+@python_2_unicode_compatible
 class BaseFormativeBlob(six.with_metaclass(FormativeTypeRegistryMeta,
                                            models.Model)):
     """
@@ -67,7 +69,11 @@ class BaseFormativeBlob(six.with_metaclass(FormativeTypeRegistryMeta,
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return '%s' % self.formative_type
 
+
+@python_2_unicode_compatible
 class FormativeBlob(BaseFormativeBlob):
     """
     Simple standalone formative blob
