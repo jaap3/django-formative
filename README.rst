@@ -22,18 +22,18 @@ Install django-formative::
 
     pip install django-formative
 
-Then add it to your Django project's `INSTALLED_APPS`::
+Then add it to your Django project's ``INSTALLED_APPS``::
 
     INSTALLED_APPS += 'formative'
 
-Run `syncdb` or `migrate` to get the database up to date.
+Run ``syncdb`` or ``migrate`` to get the database up to date.
 
 
 Formative Types
 ---------------
 
 Now it's time to define a *formative type*. Create a file called
-`formative_types.py` in a app that's in the `INSTALLED_APPS` list.
+``formative_types.py`` in a app that's in the ``INSTALLED_APPS`` list.
 In this file you can define forms and register them with formative::
 
     from django import forms
@@ -50,8 +50,8 @@ In this file you can define forms and register them with formative::
 
     FormativeBlob.register(SimpleType)
 
-Then add the following to your project's `urls.py`, right next to
-the call to `admin.autodiscover()`::
+Then add the following to your project's ``urls.py``, right next to
+the call to ``admin.autodiscover()``::
 
     import formative
     formative.autodiscover()
@@ -64,13 +64,13 @@ Inline Formative Types
 ----------------------
 
 You can also associate formative data with other models. Register the types
-you want to use with the `InlineFormativeBlob` model::
+you want to use with the ``InlineFormativeBlob`` model::
 
     from formative.models import InlineFormativeBlob
 
     InlineFormativeBlob.register(SimpleType)
 
-Then use the `InlineFormativeBlobAdmin` and `FormativeBlobInline` for the
+Then use the ``InlineFormativeBlobAdmin`` and ``FormativeBlobInline`` for the
 model's admin class::
 
     from django.contrib import admin
@@ -82,13 +82,14 @@ model's admin class::
 
     admin.site.register(Book, BookAdmin)
 
-You'll now be able to add formative objects to `Book` instances.
+You'll now be able to add formative objects to ``Book`` instances.
 
-Template tags
--------------
+
+Using formative data
+--------------------
 
 You probably want to use the data in some way. Simply get an instance of
-a FormativeBlob by its `unique_identifier` and access the data property as
+a FormativeBlob by its ``unique_identifier`` and access the data property as
 a dictionary::
 
     from formative.models import FormativeBlob
@@ -97,6 +98,10 @@ a dictionary::
     'simple'
     >>> f.data['name']
     'test'
+
+
+Template tags
+-------------
 
 Django-formative also provides a templatetag to use the data in your templates::
 
