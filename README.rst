@@ -88,7 +88,7 @@ Template tags
 -------------
 
 You probably want to use the data in some way. Simply get an instance of
-a FormativeBlob by its unique_identifier and access the data property as
+a FormativeBlob by its `unique_identifier` and access the data property as
 a dictionary::
 
     from formative.models import FormativeBlob
