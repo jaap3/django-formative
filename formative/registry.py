@@ -21,12 +21,13 @@ class FormativeTypeBase(type):
 @python_2_unicode_compatible
 @six.add_metaclass(FormativeTypeBase)
 class FormativeType(object):
-    def __init__(self, model):
+    def __init__(self, model, exclude=None):
         self.model = model
+        self.exclude = exclude
 
     @cached_property
     def form(self):
-        return self.get_form()
+        return self.get_form(exclude=self.exclude)
 
     def get_form(self, exclude=None):
         form = formative_form_factory(
@@ -55,11 +56,11 @@ class FormativeTypeRegistry(Sized, Iterable, Container):
     def __len__(self):
         return len(self.__registry)
 
-    def register(self, cls, model):
+    def register(self, cls, model, exclude=None):
         """
         Register a type
         """
-        self.__registry[cls.name] = cls(model)
+        self.__registry[cls.name] = cls(model, exclude=exclude)
 
     def get(self, name):
         """

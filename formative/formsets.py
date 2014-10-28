@@ -18,8 +18,6 @@ class FormativeFormsetMeta(type):
 
 class FormativeMetaForm(object):
     base_fields = ['formative_type']
-    ct_field = 'content_type'
-    ct_fk_field = 'object_id'
 
     def __init__(self, model):
         self.model = model
@@ -28,8 +26,7 @@ class FormativeMetaForm(object):
         instance = kwargs.get('instance')
         form = modelform_factory(self.model, FormativeTypeForm)
         if instance:
-            form = instance.formative_type.get_form(
-                exclude=[self.ct_field, self.ct_fk_field])
+            form = instance.formative_type.form
         return form(*args, **kwargs)
 
 

@@ -37,6 +37,7 @@ class BaseFormativeBlob(six.with_metaclass(FormativeTypeRegistryMeta,
     """
     formative_type = FormativeTypeField(_('type'))
     json_data = models.TextField(default='{}')
+    exclude = None
 
     @classmethod
     def register(cls, *klasses):
@@ -44,7 +45,7 @@ class BaseFormativeBlob(six.with_metaclass(FormativeTypeRegistryMeta,
         Register a formative type for use with this model
         """
         for klass in klasses:
-            cls.registry.register(klass, cls)
+            cls.registry.register(klass, cls, exclude=cls.exclude)
 
     @property
     def data(self):
@@ -99,6 +100,7 @@ class InlineFormativeBlob(BaseFormativeBlob):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     sortorder = models.PositiveIntegerField(_('sortorder'), default=0)
+    exclude = ['content_type', 'object_id']
 
     class Meta:
         verbose_name = _('inline formative blob')
