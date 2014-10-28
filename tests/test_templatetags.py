@@ -14,14 +14,14 @@ class TestFormativeTags(TestCase):
 
     def test_get_formative_blob(self):
         t = Template('''{% load formative_tags %}
-        {% get_formative_blob 'test-identifier' as simple %}
+        {% get_blob 'test-identifier' as simple %}
         {{ simple.unique_identifier }} - {{ simple.data.name }}''')
         self.assertEqual(t.render(Context()).strip(),
                          'test-identifier - test-name')
 
     def test_get_formative_blob_returns_none(self):
         t = Template('''{% load formative_tags %}
-        {% get_formative_blob 'fake-identifier' as simple %}
+        {% get_blob 'fake-identifier' as simple %}
         {{ simple.unique_identifier }} - {{ simple.data.name }}''')
         self.assertEqual(t.render(Context()).strip(),
                          '-')

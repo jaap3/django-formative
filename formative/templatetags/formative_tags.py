@@ -5,7 +5,7 @@ register = template.Library()
 
 
 @register.assignment_tag
-def get_formative_blob(unique_identifier):
+def get_blob(unique_identifier):
     """
     Get a formative blob by its unique identifier and assign it to a
     template variable.

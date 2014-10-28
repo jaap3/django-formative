@@ -71,7 +71,7 @@ a dictionary::
 Django-formative also provides a templatetag to use the data in your templates::
 
     {% load formative_tags %}
-    {% get_formative_blob 'simple' as simple %}
+    {% get_blob 'simple' as simple %}
     {{ simple.unique_identifier }}
     {{ simple.data.name }}
     {{ simple.data.body }}
