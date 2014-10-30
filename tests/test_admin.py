@@ -68,6 +68,7 @@ class TestAddAndChange(TestCase):
 
     def test_change_gets_correct_form(self):
         f = self.SimpleForm({
+            'formative_type': 'simple',
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
         })
@@ -88,7 +89,7 @@ class TestGetFieldsets(TestCase):
             'formative_type': 'simple',
         })
         self.assertEqual(self.admin.get_fieldsets(request), [
-            (None, {'fields': ['unique_identifier', 'name']})
+            (None, {'fields': ['unique_identifier', 'formative_type', 'name']})
         ])
 
     def test_get_defined_fieldsets(self):
@@ -96,7 +97,7 @@ class TestGetFieldsets(TestCase):
             'formative_type': 'fieldset-identifier',
         })
         self.assertEqual(self.admin.get_fieldsets(request),  [
-            (None, {'fields': ['unique_identifier']}),
+            (None, {'fields': ['formative_type', 'unique_identifier']}),
             ('Title', {'fields': ['title']}),
             ('Body', {'fields': ['body']})
         ])
@@ -106,7 +107,7 @@ class TestGetFieldsets(TestCase):
             'formative_type': 'fieldset-no-identifier',
         })
         self.assertEqual(self.admin.get_fieldsets(request),  [
-            (None, {'fields': ['unique_identifier']}),
+            (None, {'fields': ['unique_identifier', 'formative_type']}),
             ('Title', {'fields': ['title']}),
             ('Body', {'fields': ['body']})
         ])

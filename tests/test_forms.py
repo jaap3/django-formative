@@ -9,6 +9,7 @@ class TestSimpleForm(TestCase):
     def setUp(self):
         SimpleForm = FormativeBlob.registry.get('simple').form
         f = SimpleForm({
+            'formative_type': 'simple',
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
         })
@@ -30,6 +31,7 @@ class TestSimpleFormWithInstance(TestSimpleForm):
         super(TestSimpleFormWithInstance, self).setUp()
         SimpleForm = FormativeBlob.registry.get('simple').form
         self.f = SimpleForm({
+            'formative_type': 'simple',
             'unique_identifier': 'test-identifier',
             'name': 'changed-name'
         }, instance=self.obj)
@@ -47,6 +49,7 @@ class TestSimpleFormWithInstanceAndInitial(TestCase):
     def setUp(self):
         SimpleForm = FormativeBlob.registry.get('simple').form
         f = SimpleForm({
+            'formative_type': 'simple',
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
         })
@@ -67,6 +70,7 @@ class TestFancyForm(TestCase):
 
     def test_serializes_fancy_form(self):
         f = self.FancyForm({
+            'formative_type': 'fancy',
             'unique_identifier': 'fancy',
             'is_fancy': 'true', 'favorite_color': 'blue',
             'date_of_birth': '1967-05-13', 'income': '1967.05',
@@ -94,6 +98,7 @@ class TestRelatedForm(TestCase):
 
     def test_serializes_relation(self):
         f = self.RelatedForm({
+            'formative_type': 'related',
             'unique_identifier': 'related',
             'book': self.book.pk
         })
@@ -105,6 +110,7 @@ class TestRelatedForm(TestCase):
 
     def test_data_does_not_break_on_deletion(self):
         f = self.RelatedForm({
+            'formative_type': 'related',
             'unique_identifier': 'related',
             'book': self.book.pk
         })

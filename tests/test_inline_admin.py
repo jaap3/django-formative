@@ -1,3 +1,4 @@
+from copy import deepcopy
 from django.contrib.admin import AdminSite
 from django.test import TestCase, RequestFactory
 from formative.formsets import InlineFormativeBlobAdminFormSet
@@ -62,12 +63,15 @@ class TestChange(TestCase):
             InlineFormativeBlob.registry.get('fancy'))
 
     def test_form_1_fieldsets(self):
+        expected = deepcopy(
+            InlineFormativeBlob.registry.get('simple').fieldsets)
+        expected[0][1]['fields'] = ['sortorder'] + expected[0][1]['fields']
         self.assertEqual(
-            self.forms[0].fieldsets,
-            [(None, {'fields': ['sortorder', 'name']})])
+            self.forms[0].fieldsets, expected)
 
     def test_form_2_fieldsets(self):
-        self.assertEqual(
-            self.forms[1].fieldsets,
-            [(None, {'fields': ['sortorder']})] +
+        expected = deepcopy(
             InlineFormativeBlob.registry.get('fancy').fieldsets)
+        expected[0][1]['fields'] = ['sortorder'] + expected[0][1]['fields']
+        self.assertEqual(
+            self.forms[1].fieldsets, expected)

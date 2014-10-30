@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IS_POPUP_VAR
@@ -10,6 +11,8 @@ from formative.forms import FormativeTypeForm
 from formative.formsets import (
     FormativeFormset, InlineFormativeBlobAdminFormSet)
 from formative.models import FormativeBlob, InlineFormativeBlob
+from formative.utils import add_field_to_fieldsets
+from formative.views import InlineFormView
 
 
 class FormativeBlobAdmin(admin.ModelAdmin):
@@ -23,7 +26,10 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Get formative type from request
         """
         form_cls = modelform_factory(self.model, form=FormativeTypeForm)
-        form = form_cls(request.GET)
+        if request.method == 'POST':
+            form = form_cls(request.POST)
+        else:
+            form = form_cls(request.GET)
         if form.is_valid():
             return form.cleaned_data['formative_type']
         return None
@@ -44,18 +50,8 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         """
         ft = (obj.formative_type if obj
               else self.get_type_from_request(request))
-        fieldsets = ft.fieldsets
-        if fieldsets:
-            # user defined fieldsets, make sure unique_identifier
-            # is in there!
-            found = False
-            for fieldset in fieldsets:
-                if 'unique_identifier' in fieldset[1].get('fields', []):
-                    found = True
-                    break
-            if not found:
-                fieldsets = ([(None, {'fields': ['unique_identifier']})]
-                             + list(fieldsets))
+        # Make sure unique_identifier is in the fieldsets!
+        fieldsets = add_field_to_fieldsets('unique_identifier', ft.fieldsets)
         return fieldsets or super(
             FormativeBlobAdmin, self).get_fieldsets(request, obj)
 
@@ -101,12 +97,30 @@ class BaseFormativeInline(GenericStackedInline):
     formset = FormativeFormset
     extra = 0
 
+    class Media:
+        js = ('formative/js/formative_inline.js',)
+
 
 class FormativeBlobInline(BaseFormativeInline):
     model = InlineFormativeBlob
 
 
 class InlineFormativeBlobAdmin(admin.ModelAdmin):
+    def get_formative_model(self):
+        """
+        Returns the inline formative model
+        """
+        for inline in self.inlines:
+            if issubclass(inline, BaseFormativeInline):
+                return inline.model
+
+    def get_urls(self):
+        get_form = InlineFormView.as_view(model=self.get_formative_model())
+        urls = [url(
+            r'^formative_form/$', self.admin_site.admin_view(get_form))]
+        urls += super(InlineFormativeBlobAdmin, self).get_urls()
+        return urls
+
     def get_inline_formsets(self, request, formsets,
                             inline_instances, obj=None):
         inline_admin_formsets = []

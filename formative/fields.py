@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.forms import TypedChoiceField
@@ -73,3 +74,11 @@ class FormativeTypeField(models.Field):
         }
         defaults.update(kwargs)
         return super(FormativeTypeField, self).formfield(**defaults)
+
+
+class HiddenFormativeTypeInput(forms.HiddenInput):
+    def render(self, name, value, attrs=None):
+        if isinstance(value, FormativeType):
+            value = value.name
+        return super(
+            HiddenFormativeTypeInput, self).render(name, value, attrs=attrs)

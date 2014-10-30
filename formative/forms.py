@@ -8,6 +8,10 @@ class FormativeTypeForm(forms.ModelForm):
     class Meta:
         fields = ['formative_type']
 
+    def save(self, commit=False):
+        # Don't commit to the database, or we'll create invalid instances!
+        return super(FormativeTypeForm, self).save(commit=False)
+
 
 class FormativeForm(forms.ModelForm):
     """

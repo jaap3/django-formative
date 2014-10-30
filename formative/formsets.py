@@ -3,9 +3,14 @@ from django.contrib.contenttypes.generic import BaseGenericInlineFormSet
 from django.forms.models import modelform_factory
 from django.utils import six
 from formative.forms import FormativeTypeForm
+from formative.utils import add_field_to_fieldsets
 
 
 class FormativeFormsetMeta(type):
+    """
+    This metaclass prevents Django from overriding our MetaForm and allows
+    us to initialize the metaform with the correct model class.
+    """
     def __new__(mcs, name, bases, attrs):
         if name != 'FormativeFormset' and 'form' in attrs:
             # Get model from form
@@ -17,6 +22,9 @@ class FormativeFormsetMeta(type):
 
 
 class FormativeMetaForm(object):
+    """
+    This object tricks django's formsets into using the forms we want.
+    """
     base_fields = ['formative_type']
 
     def __init__(self, model):
@@ -24,38 +32,30 @@ class FormativeMetaForm(object):
 
     def __call__(self, *args, **kwargs):
         instance = kwargs.get('instance')
-        form = modelform_factory(self.model, FormativeTypeForm)
+        form_class = modelform_factory(self.model, FormativeTypeForm)
         if instance:
-            form = instance.formative_type.form
-        return form(*args, **kwargs)
+            form_class = instance.formative_type.form
+        elif 'data' in kwargs:
+            form = form_class(**kwargs)
+            if form.is_valid():
+                form_class = form.cleaned_data['formative_type'].form
+        return form_class(**kwargs)
 
 
 @six.add_metaclass(FormativeFormsetMeta)
 class FormativeFormset(BaseGenericInlineFormSet):
-    pass
+    """
+    A generic inline formset subclass that uses the FormativeMetaForm to
+    hand out the correct form based on model/request data.
+    """
 
 
 class InlineFormativeBlobAdminFormSet(InlineAdminFormSet):
     def get_fieldsets(self, form):
-        fieldsets = None
+        fieldsets = [(None, {'fields': form.base_fields})]
         if hasattr(form, 'formative_type'):
-            fieldsets = form.formative_type.fieldsets
-        if fieldsets is None:
-            fields = []
-            for field in form.base_fields:
-                fields.append(field)
-            fieldsets = [(None, {'fields': fields})]
-        else:
-            # user defined fieldsets, make sure sortorder
-            # is in there!
-            found = False
-            for fieldset in fieldsets:
-                if 'sortorder' in fieldset[1].get('fields', []):
-                    found = True
-                    break
-            if not found:
-                fieldsets = ([(None, {'fields': ['sortorder']})]
-                             + list(fieldsets))
+            ft = form.formative_type
+            fieldsets = add_field_to_fieldsets('sortorder', ft.fieldsets)
         return fieldsets
 
     def __iter__(self):

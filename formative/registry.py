@@ -4,17 +4,19 @@ from django.utils import six
 from django.utils.functional import cached_property
 from django.utils.text import camel_case_to_spaces
 from formative.exceptions import FormativeTypeNotRegistered
-from formative.utils import formative_form_factory
+from formative.utils import formative_form_factory, add_field_to_fieldsets
 
 
 class FormativeTypeBase(type):
     def __new__(mcs, name, bases, attrs):
-        if 'name' not in attrs:
-            attrs['name'] = camel_case_to_spaces(name).lower()
-        if 'verbose_name' not in attrs:
-            attrs['verbose_name'] = attrs['name'].title()
-        if 'fieldsets' not in attrs:
-            attrs['fieldsets'] = None
+        if name != 'FormativeType':
+            if 'name' not in attrs:
+                attrs['name'] = camel_case_to_spaces(name).lower()
+            if 'verbose_name' not in attrs:
+                attrs['verbose_name'] = attrs['name'].title()
+            if 'fieldsets' in attrs:
+                attrs['fieldsets'] = add_field_to_fieldsets(
+                    'formative_type', attrs['fieldsets'])
         return super(FormativeTypeBase, mcs).__new__(mcs, name, bases, attrs)
 
 
@@ -34,6 +36,17 @@ class FormativeType(object):
             self.model, self.form_class, exclude=exclude)
         form.formative_type = self
         return form
+
+    @cached_property
+    def fieldsets(self):
+        """
+        Fallback property for types that don't define fieldsets.
+        """
+        fields = []
+        for field in self.form_class.base_fields:
+            fields.append(field)
+        return add_field_to_fieldsets(
+            'formative_type', [(None, {'fields': fields})])
 
     def __str__(self):
         return self.verbose_name

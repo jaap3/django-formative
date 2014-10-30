@@ -6,6 +6,7 @@ from formative.models import FormativeBlob
 class TestFormativeTags(TestCase):
     def setUp(self):
         f = FormativeBlob.registry.get('simple').form({
+            'formative_type': 'simple',
             'unique_identifier': 'test-identifier',
             'name': 'test-name'
         })
