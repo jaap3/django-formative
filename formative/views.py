@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 from django.contrib.admin.helpers import InlineAdminForm
-from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 from formative.utils import add_field_to_fieldsets
 
@@ -9,15 +8,11 @@ class InlineFormView(TemplateView):
     template_name = 'formative/admin/render_fieldsets.html'
     model = None
 
-    @cached_property
-    def formative_type_form(self):
-        return self.model.registry.type_select_form
-
     def get_type_from_request(self):
         """
         Get formative type from request
         """
-        form = self.formative_type_form(self.request.GET)
+        form = self.model.registry.type_select_form(self.request.GET)
         if form.is_valid():
             return form.cleaned_data['formative_type']
         return None
@@ -31,7 +26,8 @@ class InlineFormView(TemplateView):
             fieldsets = add_field_to_fieldsets('sortorder', ft.fieldsets)
             form = ft.form(initial=initial, prefix=prefix)
         elif prefix:
-            form = self.formative_type_form(self.request.GET, prefix=prefix)
+            form = self.model.registry.type_select_form(
+                self.request.GET, prefix=prefix)
             fieldsets = [(None, {'fields': form.base_fields})]
         if form and fieldsets:
             return InlineAdminForm(None, form, fieldsets, {}, None)
