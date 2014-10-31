@@ -1,9 +1,7 @@
 from __future__ import unicode_literals
 from django.contrib.admin.helpers import InlineAdminForm
-from django.forms.models import modelform_factory
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
-from formative.forms import FormativeTypeForm
 from formative.utils import add_field_to_fieldsets
 
 
@@ -13,7 +11,7 @@ class InlineFormView(TemplateView):
 
     @cached_property
     def formative_type_form(self):
-        return modelform_factory(self.model, form=FormativeTypeForm)
+        return self.model.registry.type_select_form
 
     def get_type_from_request(self):
         """

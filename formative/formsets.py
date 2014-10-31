@@ -1,8 +1,6 @@
 from django.contrib.admin.helpers import InlineAdminForm, InlineAdminFormSet
 from django.contrib.contenttypes.generic import BaseGenericInlineFormSet
-from django.forms.models import modelform_factory
 from django.utils import six
-from formative.forms import FormativeTypeForm
 from formative.utils import add_field_to_fieldsets
 
 
@@ -32,7 +30,7 @@ class FormativeMetaForm(object):
 
     def __call__(self, *args, **kwargs):
         instance = kwargs.get('instance')
-        form_class = modelform_factory(self.model, FormativeTypeForm)
+        form_class = self.model.registry.type_select_form
         if instance:
             form_class = instance.formative_type.form
         elif 'data' in kwargs:
@@ -84,7 +82,6 @@ class SortedInlineFormativeAdminFormSet(BaseInlineFormativeAdminFormSet):
             return int(admin_form.form['sortorder'].value())
         except (KeyError, TypeError, ValueError):
             return six.MAXSIZE
-        return -1
 
     def __iter__(self):
         forms = list(

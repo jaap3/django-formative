@@ -21,13 +21,14 @@ class FormativeTypeRegistryMeta(ModelBase):
         super_new = super(FormativeTypeRegistryMeta, mcs).__new__
         # Ensure initialization is only performed for
         # subclasses of BaseFormativeBlob
-        parents = [b for b in bases if
-                   isinstance(b, FormativeTypeRegistryMeta)]
+        parents = [
+            b for b in bases if isinstance(b, FormativeTypeRegistryMeta)]
         if not parents:
             return super_new(mcs, name, bases, attrs)
-
-        attrs['registry'] = FormativeTypeRegistry()
-        return super_new(mcs, name, bases, attrs)
+        attrs['registry'] = None
+        model = super_new(mcs, name, bases, attrs)
+        model.registry = FormativeTypeRegistry(model)
+        return model
 
 
 @python_2_unicode_compatible

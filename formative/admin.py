@@ -5,11 +5,9 @@ from django.contrib.admin import helpers
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.core.exceptions import ImproperlyConfigured
-from django.forms.models import modelform_factory
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
-from formative.forms import FormativeTypeForm
 from formative.formsets import (
     FormativeFormset, SortedInlineFormativeAdminFormSet)
 from formative.models import FormativeBlob, InlineFormativeBlob
@@ -27,11 +25,10 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         """
         Get formative type from request
         """
-        form_cls = modelform_factory(self.model, form=FormativeTypeForm)
         if request.method == 'POST':
-            form = form_cls(request.POST)
+            form = self.model.registry.type_select_form(request.POST)
         else:
-            form = form_cls(request.GET)
+            form = self.model.registry.type_select_form(request.GET)
         if form.is_valid():
             return form.cleaned_data['formative_type']
         return None
@@ -73,11 +70,10 @@ class FormativeBlobAdmin(admin.ModelAdmin):
         Used in the add view to render the "select a formative type" form
         and handle its errors.
         """
-        form_cls = modelform_factory(self.model, form=FormativeTypeForm)
         if '_next' in request.GET:
-            form = form_cls(request.GET)
+            form = self.model.registry.type_select_form(request.GET)
         else:
-            form = form_cls()
+            form = self.model.registry.type_select_form()
         opts = self.model._meta
         adminform = helpers.AdminForm(
             form, [(None, {'fields': ['formative_type']})], {}, ())

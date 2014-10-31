@@ -1,9 +1,11 @@
 from collections import Container, Iterable, Sized
+from django.forms.models import modelform_factory
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import six
 from django.utils.functional import cached_property
 from django.utils.text import camel_case_to_spaces
 from formative.exceptions import FormativeTypeNotRegistered
+from formative.forms import FormativeTypeForm
 from formative.utils import formative_form_factory, add_field_to_fieldsets
 
 
@@ -56,7 +58,8 @@ class FormativeTypeRegistry(Sized, Iterable, Container):
     """
     Formative type registry
     """
-    def __init__(self):
+    def __init__(self, model):
+        self.model = model
         self.__registry = {}
 
     def __contains__(self, name):
@@ -68,6 +71,10 @@ class FormativeTypeRegistry(Sized, Iterable, Container):
 
     def __len__(self):
         return len(self.__registry)
+
+    @cached_property
+    def type_select_form(self):
+        return modelform_factory(self.model, form=FormativeTypeForm)
 
     def register(self, cls, model, exclude=None):
         """

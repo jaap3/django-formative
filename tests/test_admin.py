@@ -2,7 +2,8 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase, Client
-from formative.admin import FormativeTypeForm, FormativeBlobAdmin
+from formative.admin import FormativeBlobAdmin
+from formative.forms import FormativeTypeForm
 from formative.models import FormativeBlob
 from tests.testproject.testapp.forms import SimpleForm
 
