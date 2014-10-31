@@ -1,6 +1,9 @@
 from copy import deepcopy
 from django.contrib.admin import AdminSite
+from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, RequestFactory
+from formative.admin import InlineFormativeBlobAdmin
+from formative.forms import FormativeTypeForm
 from formative.formsets import InlineFormativeBlobAdminFormSet
 from formative.models import InlineFormativeBlob
 from tests.testproject.testapp.admin import BookAdmin
@@ -40,7 +43,7 @@ class TestChange(TestCase):
             self.formsets[0], InlineFormativeBlobAdminFormSet)
 
     def test_forms(self):
-        self.assertEqual(len(self.forms), 3)
+        self.assertEqual(len(self.forms), 4)
 
     def test_form_1_form(self):
         self.assertIsInstance(
@@ -62,6 +65,9 @@ class TestChange(TestCase):
             self.forms[1].form.formative_type,
             InlineFormativeBlob.registry.get('fancy'))
 
+    def test_form_3_form(self):
+        self.assertIsInstance(self.forms[2].form, FormativeTypeForm)
+
     def test_form_1_fieldsets(self):
         expected = deepcopy(
             InlineFormativeBlob.registry.get('simple').fieldsets)
@@ -75,3 +81,11 @@ class TestChange(TestCase):
         expected[0][1]['fields'] = ['sortorder'] + expected[0][1]['fields']
         self.assertEqual(
             self.forms[1].fieldsets, expected)
+
+
+class TestBadlyConfiguredAdmin(TestCase):
+    def setUp(self):
+        self.admin = InlineFormativeBlobAdmin(Book, AdminSite())
+
+    def test_raises_improperly_configured(self):
+        self.assertRaises(ImproperlyConfigured, self.admin.get_formative_model)

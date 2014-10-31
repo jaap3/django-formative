@@ -22,7 +22,7 @@ class InlineFormView(TemplateView):
 
     def get_form(self):
         ft = self.get_type_from_request()
-        if ft:
+        if ft and 'prefix' in self.request.GET:
             prefix = self.request.GET['prefix']
             initial = {'formative_type': ft.name}
             fieldsets = add_field_to_fieldsets('sortorder', ft.fieldsets)

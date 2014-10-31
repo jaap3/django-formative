@@ -17,13 +17,13 @@ def add_field_to_fieldsets(field_name, fieldsets):
     """
     Force a field to be in a fieldsets definition.
     """
+    # Deepcopy the definition so we don't modify it in place!
+    fieldsets = deepcopy(list(fieldsets))
     # First check if the field is already in there
     for label, fieldset in fieldsets:
         if field_name in fieldset['fields']:
             return fieldsets  # We found it!
-    # Didn't find it. Deepcopy the definition so we don't modify it in place!
-    fieldsets = deepcopy(list(fieldsets))
-    # Try to add it to the first unlabeled fieldset
+    # Didn't find it. Try to add it to the first unlabeled fieldset
     for label, fieldset in fieldsets:
         if label is None:
             fieldset['fields'] = [field_name] + list(fieldset['fields'])

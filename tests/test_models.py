@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from formative.models import FormativeBlob
+from formative.models import FormativeBlob, InlineFormativeBlob
+from tests.testproject.testapp.models import Book
 
 
 class TestFormativeTypeValidation(TestCase):
@@ -30,3 +31,17 @@ class TestFormativeBlob(TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.blob), 'identifier (Simple)')
+
+
+class TestInlineFormativeBlob(TestCase):
+    def setUp(self):
+        book = Book(title='Gunmachine')
+        book.save()
+        self.blob = InlineFormativeBlob(
+            content_object=book,
+            sortorder=0,
+            formative_type='simple',
+            json_data='{}')
+
+    def test_str(self):
+        self.assertEqual(str(self.blob), 'Simple')

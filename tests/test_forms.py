@@ -1,7 +1,9 @@
 import datetime
 from decimal import Decimal
 from django.test import TestCase
+from formative.fields import HiddenFormativeTypeInput
 from formative.models import FormativeBlob
+from tests.testproject.testapp.formative_types import SimpleType
 from tests.testproject.testapp.models import Book
 
 
@@ -120,3 +122,12 @@ class TestRelatedForm(TestCase):
         self.assertEqual(obj.data, {
             'book': None
         })
+
+
+class TestHiddenInput(TestCase):
+    def test_output(self):
+        output = HiddenFormativeTypeInput().render(
+            'formative_type', SimpleType(FormativeBlob))
+        self.assertEqual(
+            output, '<input name="formative_type"'
+                    ' type="hidden" value="simple" />')

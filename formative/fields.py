@@ -77,6 +77,9 @@ class FormativeTypeField(models.Field):
 
 
 class HiddenFormativeTypeInput(forms.HiddenInput):
+    """
+    Hidden input that gets the correct value from a FormativeType
+    """
     def render(self, name, value, attrs=None):
         if isinstance(value, FormativeType):
             value = value.name

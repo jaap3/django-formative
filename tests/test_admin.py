@@ -1,5 +1,7 @@
 from django.contrib.admin import AdminSite
-from django.test import RequestFactory, TestCase
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.test import RequestFactory, TestCase, Client
 from formative.admin import FormativeTypeForm, FormativeBlobAdmin
 from formative.models import FormativeBlob
 from tests.testproject.testapp.forms import SimpleForm
@@ -78,6 +80,32 @@ class TestAddAndChange(TestCase):
         self.assertIsInstance(response.context_data['adminform'].form,
                               SimpleForm)
         obj.delete()
+
+
+class TestAddPost(TestCase):
+    def setUp(self):
+        User.objects.create_superuser('test', 'test@example.com', 'test')
+        c = Client()
+        c.login(username='test', password='test')
+        self.response = c.post(reverse('admin:formative_formativeblob_add'), {
+            'formative_type': 'simple',
+            'unique_identifier': 'test-identifier',
+            'name': 'test-name'
+        }, follow=True)
+
+    def test_add_creates_object(self):
+        obj = FormativeBlob.objects.all()[0]
+        self.assertEqual(
+            {
+                'formative_type': obj.formative_type.name,
+                'unique_identifier': obj.unique_identifier,
+                'name': obj.data['name']
+            },
+            {
+                'formative_type': 'simple',
+                'unique_identifier': 'test-identifier',
+                'name': 'test-name'
+            })
 
 
 class TestGetFieldsets(TestCase):

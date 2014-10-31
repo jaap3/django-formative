@@ -1,8 +1,10 @@
+from __future__ import unicode_literals
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.contenttypes.admin import GenericStackedInline
+from django.core.exceptions import ImproperlyConfigured
 from django.forms.models import modelform_factory
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
@@ -111,8 +113,10 @@ class InlineFormativeBlobAdmin(admin.ModelAdmin):
         Returns the inline formative model
         """
         for inline in self.inlines:
-            if issubclass(inline, BaseFormativeInline):
+            if issubclass(inline, BaseFormativeInline):  # pragma: no branch
                 return inline.model
+        raise ImproperlyConfigured(
+            '%s requires a FormativeBlobInline' % self.__class__.__name__)
 
     def get_urls(self):
         get_form = InlineFormView.as_view(model=self.get_formative_model())
@@ -126,9 +130,11 @@ class InlineFormativeBlobAdmin(admin.ModelAdmin):
         inline_admin_formsets = []
         for inline, formset in zip(inline_instances, formsets):
             if isinstance(inline, BaseFormativeInline):
+                # Special case for FormativeInlines
                 inline_admin_formset = InlineFormativeBlobAdminFormSet(
                     inline, formset, [], {}, {}, model_admin=self)
             else:
+                # Django's standar behaviour
                 fieldsets = list(
                     inline.get_fieldsets(request, obj))
                 readonly = list(
