@@ -1,4 +1,3 @@
-import sys
 from django.contrib.admin.helpers import InlineAdminForm, InlineAdminFormSet
 from django.contrib.contenttypes.generic import BaseGenericInlineFormSet
 from django.forms.models import modelform_factory
@@ -84,7 +83,7 @@ class SortedInlineFormativeAdminFormSet(BaseInlineFormativeAdminFormSet):
         try:
             return int(admin_form.form['sortorder'].value())
         except (KeyError, TypeError, ValueError):
-            return sys.maxint
+            return six.MAXSIZE
         return -1
 
     def __iter__(self):
