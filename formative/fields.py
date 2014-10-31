@@ -1,6 +1,7 @@
 from django import forms
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.forms import TypedChoiceField
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
@@ -17,10 +18,12 @@ class FormativeTypeField(models.Field):
         kwargs['max_length'] = 255
         super(FormativeTypeField, self).__init__(*args, **kwargs)
 
-    def get_choices(self):
+    def get_choices(self, include_blank=True, blank_choice=BLANK_CHOICE_DASH):
         """
         Get the formative types for the bound model.
         """
+        if include_blank:  # pragma: no branch
+            yield blank_choice[0]
         for item in self.model.registry:
             yield (item.name, item.verbose_name)
 

@@ -38,7 +38,7 @@ class FormativeMetaForm(object):
             form_class = instance.formative_type.form
         elif 'data' in kwargs:
             form = form_class(**kwargs)
-            if form.is_valid():
+            if form.has_changed() and form.is_valid():
                 form_class = form.cleaned_data['formative_type'].form
         return form_class(**kwargs)
 

@@ -46,8 +46,7 @@ class TestInlineFormViewInvalidRequests(TestCase):
             '/', {'formative_type': 'invalid', 'prefix': 'test-prefix'})
         response = self.view(request)
         self.assertContains(
-            response, '<p class="errornote">'
-                      'Invalid formative type or missing parameters</p>')
+            response, '<li>This field is required.</li>')
 
     def test_no_prefix(self):
         request = RequestFactory().get('/', {'formative_type': 'simple'})

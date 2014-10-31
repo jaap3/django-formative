@@ -26,17 +26,22 @@ var formative = {};
             prefix: prefix
         };
         $.get('../formative_form', data, function (response) {
-            $(response.trim()).insertAfter($container);
+            $form = $(response.trim());
+            $form.insertAfter($container);
+            formative.addOkButton($form);
             $container.remove();
         });
     };
 
 
-    $(function () {
-        // insert the OK button on DOM ready
+    formative.addOkButton = function ($container) {
         var selectButton = $('<input type="button" value="OK">');
         selectButton.click(formative.selectType);
-        selectButton.insertAfter($('.field-formative_type select'));
+        selectButton.insertAfter($('.field-formative_type select', $container));
+    };
+
+    $(function () {
+        formative.addOkButton($('.inline-group'));
     });
 
 
