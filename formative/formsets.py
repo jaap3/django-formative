@@ -83,7 +83,7 @@ class SortedInlineFormativeAdminFormSet(BaseInlineFormativeAdminFormSet):
     def sort_key(self, admin_form):
         try:
             return int(admin_form.form['sortorder'].value())
-        except (KeyError, ValueError):
+        except (KeyError, TypeError, ValueError):
             return sys.maxint
         return -1
 
