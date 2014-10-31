@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, RequestFactory
 from formative.admin import InlineFormativeBlobAdmin
 from formative.forms import FormativeTypeForm
-from formative.formsets import InlineFormativeBlobAdminFormSet
+from formative.formsets import SortedInlineFormativeAdminFormSet
 from formative.models import InlineFormativeBlob
 from tests.testproject.testapp.admin import BookAdmin
 from tests.testproject.testapp.models import Book
@@ -40,7 +40,7 @@ class TestChange(TestCase):
 
     def test_formsets(self):
         self.assertIsInstance(
-            self.formsets[0], InlineFormativeBlobAdminFormSet)
+            self.formsets[0], SortedInlineFormativeAdminFormSet)
 
     def test_forms(self):
         self.assertEqual(len(self.forms), 4)

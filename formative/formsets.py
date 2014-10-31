@@ -51,7 +51,7 @@ class FormativeFormset(BaseGenericInlineFormSet):
     """
 
 
-class BaseInlineFormativeBlobAdminFormSet(InlineAdminFormSet):
+class BaseInlineFormativeAdminFormSet(InlineAdminFormSet):
     def get_fieldsets(self, form):
         fieldsets = [(None, {'fields': form.base_fields})]
         if hasattr(form, 'formative_type'):
@@ -79,7 +79,7 @@ class BaseInlineFormativeBlobAdminFormSet(InlineAdminFormSet):
             model_admin=self.opts)
 
 
-class SortedInlineFormativeBlobAdminFormSet(BaseInlineFormativeBlobAdminFormSet):
+class SortedInlineFormativeAdminFormSet(BaseInlineFormativeAdminFormSet):
     def sort_key(self, admin_form):
         try:
             return int(admin_form.form['sortorder'].value())
@@ -88,7 +88,8 @@ class SortedInlineFormativeBlobAdminFormSet(BaseInlineFormativeBlobAdminFormSet)
         return -1
 
     def __iter__(self):
-        forms = list(super(SortedInlineFormativeBlobAdminFormSet, self).__iter__())
+        forms = list(
+            super(SortedInlineFormativeAdminFormSet, self).__iter__())
         for form in sorted(forms[:-1], key=self.sort_key):
             yield form
-        yield forms[-1]
+        yield forms[-1]  # The empty form
