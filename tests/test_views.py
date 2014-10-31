@@ -38,17 +38,20 @@ class TestInlineFormViewInvalidRequests(TestCase):
         request = RequestFactory().get('/')
         response = self.view(request)
         self.assertContains(
-            response, '<p>Invalid formative type or missing parameters</p>')
+            response, '<p class="errornote">'
+                      'Invalid formative type or missing parameters</p>')
 
     def test_bad_formative_type(self):
         request = RequestFactory().get(
             '/', {'formative_type': 'invalid', 'prefix': 'test-prefix'})
         response = self.view(request)
         self.assertContains(
-            response, '<p>Invalid formative type or missing parameters</p>')
+            response, '<p class="errornote">'
+                      'Invalid formative type or missing parameters</p>')
 
     def test_no_prefix(self):
         request = RequestFactory().get('/', {'formative_type': 'simple'})
         response = self.view(request)
         self.assertContains(
-            response, '<p>Invalid formative type or missing parameters</p>')
+            response, '<p class="errornote">'
+                      'Invalid formative type or missing parameters</p>')

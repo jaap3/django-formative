@@ -2,5 +2,5 @@
 {% for fieldset in form %}
     {% include "admin/includes/fieldset.html" %}
 {% empty %}
-    <p>{% trans 'Invalid formative type or missing parameters' %}</p>
+    <p class="errornote">{% trans 'Invalid formative type or missing parameters' %}</p>
 {% endfor %}
