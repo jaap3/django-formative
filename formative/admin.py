@@ -11,7 +11,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from formative.forms import FormativeTypeForm
 from formative.formsets import (
-    FormativeFormset, InlineFormativeBlobAdminFormSet)
+    FormativeFormset, SortedInlineFormativeBlobAdminFormSet)
 from formative.models import FormativeBlob, InlineFormativeBlob
 from formative.utils import add_field_to_fieldsets
 from formative.views import InlineFormView
@@ -131,7 +131,7 @@ class InlineFormativeBlobAdmin(admin.ModelAdmin):
         for inline, formset in zip(inline_instances, formsets):
             if isinstance(inline, BaseFormativeInline):
                 # Special case for FormativeInlines
-                inline_admin_formset = InlineFormativeBlobAdminFormSet(
+                inline_admin_formset = SortedInlineFormativeBlobAdminFormSet(
                     inline, formset, [], {}, {}, model_admin=self)
             else:
                 # Django's standar behaviour
