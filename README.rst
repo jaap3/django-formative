@@ -6,11 +6,11 @@ django-formative
       :target: https://pypi.python.org/pypi/django-formative/
       :alt: Latest Version
 
-.. image:: https://travis-ci.org/EightMedia/django-formative.png?branch=master
-    :target: https://travis-ci.org/EightMedia/django-formative
+.. image:: https://travis-ci.org/jaap3/django-formative.png?branch=master
+    :target: https://travis-ci.org/jaap3/django-formative
 
-.. image:: https://coveralls.io/repos/EightMedia/django-formative/badge.png?branch=master
-    :target: https://coveralls.io/r/EightMedia/django-formative?branch=master
+.. image:: https://coveralls.io/repos/jaap3/django-formative/badge.png?branch=master
+    :target: https://coveralls.io/r/jaap3/django-formative?branch=master
 
 Flexible non-model data objects in Django's admin using Django forms.
 
